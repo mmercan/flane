@@ -18,26 +18,95 @@ function Unzip($zipfile, $outdir) {
 }
 
 
-$folder = "AWWeb.Web.Sts"
-$scriptpath = $MyInvocation.MyCommand.Path 
-$dir = Split-Path $scriptpath
+<<<<<<< HEAD
+# function Add-Folder {
+#     param($folder)
+#     $global:folder = $folder
+#     # $folder = "AWWeb.Web.Sts"
+#     $scriptpath = $MyInvocation.ScriptName # $MyInvocation.MyCommand.Path 
+#     $dir = Split-Path $scriptpath
+#     $appFolder = Join-Path -Path $dir -ChildPath ..\..\..\prototypes\identity\$folder
+#     $appRootFolder = Join-Path -Path $dir -ChildPath ..\..\..\prototypes\identity
+#     # $appFolder
 
-$appFolder = Join-Path -Path $dir -ChildPath ..\..\prototypes\identity\$folder
-$appRootFolder = Join-Path -Path $dir -ChildPath ..\..\prototypes\identity
-$appFolder
+# }
 
-function new-dotnet {
+=======
+function Add-Folder {
+    param($folder)
+
+    # $folder = "AWWeb.Web.Sts"
+
+    $scriptpath = $MyInvocation.ScriptName # $MyInvocation.MyCommand.Path 
+    $dir = Split-Path $scriptpath
+
+    $appFolder = Join-Path -Path $dir -ChildPath ..\..\..\prototypes\identity\$folder
+    $appRootFolder = Join-Path -Path $dir -ChildPath ..\..\..\prototypes\identity
+    $appFolder
+
+}
+
+#$folder = "AWWeb.Web.Sts"
+#$scriptpath = $MyInvocation.MyCommand.Path 
+#$dir = Split-Path $scriptpath
+
+#$appFolder = Join-Path -Path $dir -ChildPath ..\..\prototypes\identity\$folder
+#$appRootFolder = Join-Path -Path $dir -ChildPath ..\..\prototypes\identity
+#$appFolder
+
+function new-dotnet-Individual {
     dotnet new mvc --auth  Individual --output $folder
     Set-Location -Path $appFolder
+>>>>>>> a18b4cc... builder module created
 
+#$folder = "AWWeb.Web.Sts"
+#$scriptpath = $MyInvocation.MyCommand.Path 
+#$dir = Split-Path $scriptpath
+
+#$appFolder = Join-Path -Path $dir -ChildPath ..\..\prototypes\identity\$folder
+#$appRootFolder = Join-Path -Path $dir -ChildPath ..\..\prototypes\identity
+#$appFolder
+
+function new-dotnet-Individual {
+    dotnet new mvc --auth  Individual # --output $folder
+    
+    $fileName = "./Properties/launchSettings.json"
+    $launchSettings = Get-Content $fileName  -raw
+    $launchSettings = $launchSettings.replace('"applicationUrl": "https://localhost:5001;http://localhost:5000"', '"applicationUrl": "http://localhost:5000"')
+    $launchSettings | set-content  $fileName
+<<<<<<< HEAD
+
+    
+
+    dotnet add package "WebPush-netcore"
+    dotnet add package "Microsoft.AspNetCore.Identity" -v 2.1.0
+    dotnet add package "Microsoft.AspNetCore.Identity.UI" -v 2.1.0
+    dotnet add package "Microsoft.AspNetCore.Identity.EntityFrameworkCore" -v 2.1.0
+    dotnet add package "Swashbuckle.AspNetCore"
+}
+
+
+function new-dotnet {
+    dotnet new mvc # --output $folder
+    
     $fileName = "./Properties/launchSettings.json"
     $launchSettings = Get-Content $fileName  -raw
     $launchSettings = $launchSettings.replace('"applicationUrl": "https://localhost:5001;http://localhost:5000"', '"applicationUrl": "http://localhost:5000"')
     $launchSettings | set-content  $fileName
 
+    
+
+    dotnet add package "WebPush-netcore"
+    dotnet add package "Microsoft.AspNetCore.Identity" -v 2.1.0
+    dotnet add package "Microsoft.AspNetCore.Identity.UI" -v 2.1.0
+    dotnet add package "Microsoft.AspNetCore.Identity.EntityFrameworkCore" -v 2.1.0
+    dotnet add package "Swashbuckle.AspNetCore"
 }
 
+=======
+}
 
+>>>>>>> a18b4cc... builder module created
 function Add-PushNotificationController {
     $PushNotificationController = @' 
 using System;
@@ -158,8 +227,13 @@ namespace __projectname__.Controllers
 
 function Add-TokenController {
 
-    $TokenController = @' 
+    new-item -type directory -path $appFolder\DbContexts -Force
+    new-item -type directory -path $appFolder\Repositories -Force
+    new-item -type directory -path $appFolder\Models -Force
+
+    $TokenController = @'
     using __projectname__.Models;
+    using __projectname__.Repositories;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
@@ -175,83 +249,179 @@ function Add-TokenController {
     using System.Threading.Tasks;
     using Newtonsoft.Json;
     using Microsoft.AspNetCore.Authentication.JwtBearer;
+    using Microsoft.Extensions.Options;
 
     namespace __projectname__.Controllers
     {
         [Route("api/[controller]")]
     public class TokenController : Controller
     {
-        private readonly IConfiguration _config;
-        private readonly UserManager<IdentityUser> _userManager;
-        private readonly SignInManager<IdentityUser> _signInManager;
-        private readonly ILogger<TokenController> _logger;
-        private readonly RoleManager<IdentityRole> _roleManager;
-        public TokenController(IConfiguration configuration, UserManager<IdentityUser> userManager,
-            SignInManager<IdentityUser> signInManager,
-            ILogger<TokenController> logger,
+        private readonly IOptions<TokenSettings> tokenSettings;
+        private readonly UserManager<IdentityUser> userManager;
+        private readonly SignInManager<IdentityUser> signInManager;
+        private readonly ILogger<TokenController> logger;
+        private readonly RoleManager<IdentityRole> roleManager;
+        private readonly ITokenRepository tokenRepo;
+
+        public TokenController(IOptions<TokenSettings> tokenSettings,
+           ITokenRepository tokenRepository,
+           UserManager<IdentityUser> userManager,
+           SignInManager<IdentityUser> signInManager,
+           ILogger<TokenController> logger,
            RoleManager<IdentityRole> roleManager
         )
         {
-            _config = configuration;
-            _userManager = userManager;
-            _signInManager = signInManager;
-            _logger = logger;
-            _roleManager = roleManager;
+            this.tokenSettings = tokenSettings;
+            this.userManager = userManager;
+            this.signInManager = signInManager;
+            this.logger = logger;
+            this.roleManager = roleManager;
+            this.tokenRepo = tokenRepository;
         }
 
-        [HttpPost("")]
-        [AllowAnonymous]
-        public async Task<IActionResult> Login([FromBody] AuthRequest authUserRequest)
+        [HttpPost("auth")]
+        public async Task<IActionResult> Auth([FromBody]AuthRequest authUserRequest)
         {
-            var user = await _userManager.FindByEmailAsync(authUserRequest.UserName);
+            logger.LogInformation("Grant Type is " + authUserRequest.GrantType);
+            if (authUserRequest == null)
+            {
+                return Json(new
+                {
+                    Code = "901",
+                    Message = "null of parameters",
+                    // Data = null
+                });
+            }
+
+            if (authUserRequest.GrantType == "password")
+            {
+                return await Login(authUserRequest);
+            }
+            else if (authUserRequest.GrantType == "refresh_token")
+            {
+                return Json(new
+                {
+                    Code = "901",
+                    Message = "null of parameters",
+                    // Data = null
+                });
+                // return Json(DoRefreshToken(authUserRequest));
+            }
+            else
+            {
+                return Json(new
+                {
+                    Code = "904",
+                    Message = "bad request",
+                    // Data = null
+                });
+            }
+        }
+
+
+        private async Task<IActionResult> Login(AuthRequest authUserRequest)
+        {
+            var user = await userManager.FindByEmailAsync(authUserRequest.UserName);
             if (user != null)
             {
-                var checkPwd = await _signInManager.CheckPasswordSignInAsync(user, authUserRequest.Password, false);
-                var roles = await _userManager.GetRolesAsync(user);
+                var checkPwd = await signInManager.CheckPasswordSignInAsync(user, authUserRequest.Password, false);
+                var roles = await userManager.GetRolesAsync(user);
                 var roleString = JsonConvert.SerializeObject(roles);
                 if (checkPwd.Succeeded)
                 {
-                    var claims = new List<Claim>
+                    bool refreshTokenDone = true;
+                    string refreshToken = null;
+                    if (tokenSettings.Value.MultipleRefreshTokenEnabled)
+                    {
+                        refreshToken = Guid.NewGuid().ToString().Replace("-", "");
+                        var tokenRepoModel = new TokenRepoModel
+                        {
+                            ClientId = authUserRequest.ClientId,
+                            RefreshToken = refreshToken,
+                            Id = Guid.NewGuid().ToString(),
+                            IsStop = 0
+                        };
+                        refreshTokenDone = tokenRepo.AddToken(tokenRepoModel);
+                    }
+
+                    if (refreshTokenDone)
+                    {
+                        var response = await GetJwt(user, roles, authUserRequest.ClientId, refreshToken);
+                        return Ok(response);
+                    }
+                    else
+                    {
+                        return BadRequest(new
+                        {
+                            Code = "909",
+                            Message = "can not add token to database",
+                        });
+                    }
+
+                }
+            }
+
+
+            return BadRequest(
+             new
+             {
+                 Code = "902",
+                 Message = "invalid user infomation",
+
+             });
+        }
+
+
+        private async Task<string> GetJwt(IdentityUser user, IList<string> userRoles, string client_id, string refresh_token)
+        {
+            var now = DateTime.UtcNow;
+            var claims = new List<Claim>
                         {
                             new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
                             new Claim(JwtRegisteredClaimNames.Jti, user.Id.ToString()),
                             new Claim(JwtRegisteredClaimNames.Email, user.UserName),
+                            new Claim(JwtRegisteredClaimNames.Iat, now.ToUniversalTime().ToString(), ClaimValueTypes.Integer64),
                             new Claim(ClaimTypes.Name,  user.UserName),
                         };
-
-                    //var userClaims = await _userManager.GetClaimsAsync(user);
-                    //claims.AddRange(userClaims);
-                    var userRoles = await _userManager.GetRolesAsync(user);
-
-                    foreach (var userRole in userRoles)
+            foreach (var userRole in userRoles)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, userRole));
+                var role = await roleManager.FindByNameAsync(userRole);
+                if (role != null)
+                {
+                    var roleClaims = await roleManager.GetClaimsAsync(role);
+                    foreach (Claim roleClaim in roleClaims)
                     {
-                        claims.Add(new Claim(ClaimTypes.Role, userRole));
-                        var role = await _roleManager.FindByNameAsync(userRole);
-                        if (role != null)
-                        {
-                            var roleClaims = await _roleManager.GetClaimsAsync(role);
-                            foreach (Claim roleClaim in roleClaims)
-                            {
-                                claims.Add(roleClaim);
-                            }
-                        }
+                        claims.Add(roleClaim);
                     }
-                    var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Tokens:Key"]));
-                    var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-
-                    var token = new JwtSecurityToken(_config["Tokens:Issuer"],
-                    _config["Tokens:Issuer"],
-                    claims,
-                    expires: DateTime.Now.AddMinutes(240),
-                    signingCredentials: creds);
-                    var expires = DateTime.Now.AddMinutes(240);
-
-
-                    return Ok(new { token = new JwtSecurityTokenHandler().WriteToken(token), expires = expires, expiresMinutes = 240 });
                 }
             }
 
-            return BadRequest("Could not create token");
+
+            // var symmetricKeyAsBase64 = tokenSettings.Value.Secret;
+            // var keyByteArray = Encoding.ASCII.GetBytes(symmetricKeyAsBase64);
+            // var signingKey = new SymmetricSecurityKey(keyByteArray);
+            var signingKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(tokenSettings.Value.Secret));
+            var creds = new SigningCredentials(signingKey, SecurityAlgorithms.HmacSha256);
+
+            var jwt = new JwtSecurityToken(
+                issuer: tokenSettings.Value.Issuer,
+                audience: tokenSettings.Value.Audience,
+                claims: claims,
+                notBefore: now,
+                expires: now.Add(TimeSpan.FromMinutes(2)),
+                signingCredentials: creds);
+
+            var encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
+
+            var response = new
+            {
+                access_token = encodedJwt,
+                expires_in = (int)TimeSpan.FromMinutes(2).TotalSeconds,
+                refresh_token = refresh_token,
+            };
+
+            return JsonConvert.SerializeObject(response, new JsonSerializerSettings { Formatting = Formatting.Indented });
         }
 
 
@@ -299,8 +469,8 @@ function Add-TokenController {
         [HttpPost("validateuser")]
         public async Task<object> Validate([FromBody]ValidateTokenRequest tokenRequest)
         {
-            _logger.LogInformation("Email addess : " + tokenRequest.UserName);
-            var user = await _userManager.FindByEmailAsync(tokenRequest.UserName);
+            logger.LogInformation("Email addess : " + tokenRequest.UserName);
+            var user = await userManager.FindByEmailAsync(tokenRequest.UserName);
             bool exists = user != null;
             if (!exists) return BadRequest("The user was not found.");
             string tokenUsername = ValidateToken(tokenRequest.Token);
@@ -319,7 +489,7 @@ function Add-TokenController {
                 JwtSecurityToken jwtToken = (JwtSecurityToken)tokenHandler.ReadToken(token);
                 if (jwtToken == null)
                     return null;
-                var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Tokens:Key"]));
+                var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(tokenSettings.Value.Secret));
                 TokenValidationParameters parameters = new TokenValidationParameters()
                 {
                     RequireExpirationTime = true,
@@ -331,12 +501,12 @@ function Add-TokenController {
                 ClaimsPrincipal principal = tokenHandler.ValidateToken(token,
                       parameters, out securityToken);
 
-                _logger.LogDebug("GetPrincipal Returned : " + principal.Identity.Name);
+                logger.LogDebug("GetPrincipal Returned : " + principal.Identity.Name);
                 return principal;
             }
             catch (Exception e)
             {
-                _logger.LogError("Exception : " + e.Message);
+                logger.LogError("Exception : " + e.Message);
                 return null;
             }
         }
@@ -359,25 +529,103 @@ function Add-TokenController {
             }
             Claim usernameClaim = identity.FindFirst(ClaimTypes.Name);
             username = usernameClaim.Value;
-            _logger.LogDebug("ValidateToken Returned : " + username);
+            logger.LogDebug("ValidateToken Returned : " + username);
             return username;
         }
+
     }
 }
 '@
     $TokenController = $TokenController.replace("__projectname__", $folder)
     $TokenController | set-content  ".\Controllers\TokenController.cs"
 
+    $TokenDbContext = @'
+    using Microsoft.EntityFrameworkCore;
+    using System.IO;
+    using __projectname__.Models;
+    namespace __projectname__.DbContexts
+    {
+        public class TokenDbContext : DbContext
+        {
+            public DbSet<TokenRepoModel> Tokens { get; set; }
+            public TokenDbContext(DbContextOptions<TokenDbContext> options): base(options)
+            { }
+            //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+            //{
+            //    var connStr = Path.Combine(Directory.GetCurrentDirectory(), "demo.db");
+            //    optionsBuilder.UseSqlite($"Data Source={connStr}");
+            //}
+        }
+    }
+'@
+    $TokenDbContext = $TokenDbContext.replace("__projectname__", $folder)
+    $TokenDbContext | set-content  ".\DbContexts\TokenDbContext.cs"
+
+    $TokenRepository = @"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Threading.Tasks;
+    using System.ComponentModel.DataAnnotations;
+    using System.ComponentModel.DataAnnotations.Schema;
+    using __projectname__.DbContexts;
+    using __projectname__.Models;
+
+    namespace __projectname__.Repositories
+    {
+        public class TokenRepository : ITokenRepository
+        {
+            private TokenDbContext dbContext;
+            public TokenRepository(TokenDbContext dbContext)
+            {
+                this.dbContext = dbContext;
+            }
+            public bool AddToken(TokenRepoModel token)
+            {
+                dbContext.Tokens.Add(token);
+                return dbContext.SaveChanges() > 0;
+            }
+            public bool ExpireToken(TokenRepoModel token)
+            {
+                dbContext.Tokens.Update(token);
+                    return dbContext.SaveChanges() > 0;
+            }
+            public TokenRepoModel GetToken(string refresh_token, string client_id)
+            {
+                    return dbContext.Tokens.FirstOrDefault(x => x.ClientId == client_id && x.RefreshToken == refresh_token);
+            }
+        }
+    }
+"@
+    $TokenRepository = $TokenRepository.replace("__projectname__", $folder)
+    $TokenRepository | set-content  ".\Repositories\TokenRepository.cs"
+
+    $ITokenRepository = @"
+using __projectname__.Models;
+namespace __projectname__.Repositories
+{
+    public interface ITokenRepository
+    {
+        bool AddToken(TokenRepoModel token);
+        bool ExpireToken(TokenRepoModel token);
+        TokenRepoModel GetToken(string refresh_token, string client_id);
+    }
+}
+"@
+    $ITokenRepository = $ITokenRepository.replace("__projectname__", $folder)
+    $ITokenRepository | set-content  ".\Repositories\ITokenRepository.cs"
 
     $RequestResult = @'
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
+    using System.ComponentModel.DataAnnotations;
+    using System.ComponentModel.DataAnnotations.Schema;
 
     namespace __projectname__.Models
     {
-    public class RequestResult
+        public class RequestResult
     {
         public RequestState State { get; set; }
         public string Msg { get; set; }
@@ -395,6 +643,27 @@ function Add-TokenController {
     {
         public string UserName { get; set; }
         public string Password { get; set; }
+        public string GrantType { get; set; }
+        public string RefreshToken { get; set; }
+        public string ClientId { get; set; }
+        public string ClientSecret { get; set; }
+    }
+
+    public class TokenSettings
+    {
+        public string Secret { get; set; }
+        public string Issuer { get; set; }
+        public string Audience { get; set; }
+        public bool MultipleRefreshTokenEnabled { get; set; }
+    }
+
+    public class TokenRepoModel
+    {
+        [Key]
+        public string Id { get; set; }
+        public string ClientId { get; set; }
+        public string RefreshToken { get; set; }
+        public int IsStop { get; set; }
     }
 
     public class ValidateTokenRequest
@@ -402,21 +671,20 @@ function Add-TokenController {
         public string UserName { get; set; }
         public string Token { get; set; }
     }
-    }
+}
 '@
     $RequestResult = $RequestResult.replace("__projectname__", $folder)
     $RequestResult | set-content  ".\Models\RequestResult.cs"
 
-
     $jobj = Get-Content '.\appsettings.json' -raw | ConvertFrom-Json
-
     $tokens = @"
     {
-   "Key": "Rather_very_long_key",
-   "Issuer": "Rather_very_long_key"
-}
+        "Secret": "aHR0cDovL3d3dy5tbWVyY2FuLmNvbQ==",
+        "Issuer": "http://www.mmercan.com",
+        "Audience": "Matt Mercan",
+        "MultipleRefreshTokenEnabled": true
+    }
 "@
-
     $AzureAd = @"
 {
     "Instance": "https://login.microsoftonline.com/",
@@ -427,84 +695,113 @@ function Add-TokenController {
   }
 
 "@
-
     $jobj| add-member -Name "Tokens" -value (Convertfrom-Json $tokens) -MemberType NoteProperty
     $jobj| add-member -Name "AzureAd" -value (Convertfrom-Json $AzureAd) -MemberType NoteProperty
     $json = $jobj| ConvertTo-Json -Depth 5
     $json | set-content  '.\appsettings.json'
 }
 
-function Add-corsswagger-startupcs {
+function Add-Sts-startupcs {
+
+    
 
     $fileName = "$appFolder\Startup.cs"
-    $startupobj = (Get-Content $fileName) | 
+    $startupobj = (Get-Content $fileName) |
         Foreach-Object {
         $_ # send the current line to output
-        if ($_ -match ".AddEntityFrameworkStores<ApplicationDbContext>()") {
-            #Add Lines after the selected pattern 
-
-            '         //  services.AddIdentity<IdentityUser, IdentityRole>()'
+        if ($_ -match "using System;") {
+            'using Microsoft.IdentityModel.Tokens;'
+            'using System.Security.Claims;'
+            'using Microsoft.AspNetCore.Authentication.JwtBearer;'
+            'using __projectname__.Models;'
+            'using __projectname__.DbContexts;'
+            'using __projectname__.Repositories;'
+        }
+        if ($_ -match "services.AddDefaultIdentity<IdentityUser>()") {
             '            .AddRoles<IdentityRole>()'
-            '            .AddEntityFrameworkStores<ApplicationDbContext>()'
-            '            .AddDefaultTokenProviders();'
-            '            services.AddAuthentication(sharedOptions =>'
-            '            {'
-            '                sharedOptions.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;'
-            '                sharedOptions.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;'
-            '            })'
-            '         //   .AddJwtBearer("local",cfg =>'
-            '         //   {'
-            '         //   cfg.RequireHttpsMetadata = false;'
-            '         //   cfg.SaveToken = true;'
-            '         //       cfg.TokenValidationParameters = new TokenValidationParameters()'
-            '         //       {'
-            '         //           ValidIssuer = Configuration["Tokens:Issuer"],'
-            '         //           ValidAudience = Configuration["Tokens:Issuer"],'
-            '         //           IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(Configuration["Tokens:Key"])),'
-            '         //           RoleClaimType = ClaimTypes.Role'
-            '         //       };'
-            '         //   })'
-            '            .AddJwtBearer("azure",cfg =>'
-            '            {'
-            '                cfg.RequireHttpsMetadata = false;'
-            '                cfg.SaveToken = true;'
-            '                cfg.Authority = Configuration["AzureAd:Instance"] + "/" + Configuration["AzureAD:TenantId"];'
-            '                cfg.Audience = Configuration["AzureAd:ClientId"];'
-            '            });'
+        }
+        if ($_ -match "Configuration.GetConnectionString") {
+            '           .AddDbContext<TokenDbContext>(options =>options.UseSqlite(Configuration.GetConnectionString("DefaultConnection")));'
+        }
+        if ($_ -match ".AddEntityFrameworkStores<ApplicationDbContext>()") {
+            #Add Lines after the selected pattern
+            '           .AddDefaultTokenProviders();'
             ''
-            '            //use both jwt schemas interchangeably  https://stackoverflow.com/questions/49694383/use-multiple-jwt-bearer-authentication'
-            '            //    services.AddAuthorization(options =>{'
-            '            //options.DefaultPolicy = new AuthorizationPolicyBuilder()'
-            '            //    .RequireAuthenticatedUser()'
-            '            //    .AddAuthenticationSchemes("azure", "Custom")'
-            '            //    .Build();'
-            '            //});'
+            '           services.Configure<TokenSettings>(Configuration.GetSection("Tokens"));'
+            '           services.AddScoped<ITokenRepository, TokenRepository>();'
+            '           services.AddAuthentication(sharedOptions =>'
+            '           {'
+            '               sharedOptions.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;'
+            '               sharedOptions.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;'
+            '           })'
+            '           .AddJwtBearer("azure", cfg =>'
+            '           {'
+            '               cfg.RequireHttpsMetadata = false;'
+            '               cfg.SaveToken = true;'
+            '               cfg.Authority = Configuration["AzureAd:Instance"] + "/" + Configuration["AzureAD:TenantId"];'
+            '               cfg.Audience = Configuration["AzureAd:ClientId"];'
+            '           })'
+            '           .AddJwtBearer("local", cfg =>'
+            '           {'
+            '               cfg.RequireHttpsMetadata = false;'
+            '               cfg.SaveToken = true;'
+            '               cfg.TokenValidationParameters = new TokenValidationParameters()'
+            '               {'
+            '                   ValidIssuer = Configuration["Tokens:Issuer"],'
+            '                   ValidAudience = Configuration["Tokens:Audience"],'
+            '                   IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(Configuration["Tokens:Secret"])),'
+            '                   RoleClaimType = ClaimTypes.Role'
+            '               };'
+            '           });'
             ''
+            '           //use both jwt schemas interchangeably  https://stackoverflow.com/questions/49694383/use-multiple-jwt-bearer-authentication'
+            '           // services.AddAuthorization(options =>{options.DefaultPolicy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().AddAuthenticationSchemes("azure", "Custom").Build();});'
+            ''
+        }
+        # if ($_ -match "UseStaticFiles") {
+        #     '           using (var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())'
+        #     '           {'
+        #     '               var context = serviceScope.ServiceProvider.GetRequiredService<TokenDbContext>();'
+        #     '               context.Database.EnsureCreated();'
+        #     '               var context2 = serviceScope.ServiceProvider.GetRequiredService<ApplicationDbContext>();'
+        #     '               context2.Database.Migrate();'
+        #     '           }'
+        # }
+
+    }
+
+    $startupobj = $startupobj.replace(".AddEntityFrameworkStores<ApplicationDbContext>();", ".AddEntityFrameworkStores<ApplicationDbContext>()")
+    $startupobj = $startupobj.replace(' Configuration.GetConnectionString("DefaultConnection")));', ' Configuration.GetConnectionString("DefaultConnection")))')
+    $startupobj = $startupobj.replace("__projectname__", $folder)
+    $startupobj | set-content  $fileName
+}
+
+function Add-cors-swagger-startupcs {
+
+    $fileName = "$appFolder\Startup.cs"
+    $startupobj = (Get-Content $fileName) |
+        Foreach-Object {
+        $_ # send the current line to output
+        if ($_ -match "using System;") {
+            'using Swashbuckle.AspNetCore.Swagger;'
+        }
+        if ($_ -match "services.AddMvc()") {
             '            services.AddCors(o => o.AddPolicy("MyPolicy", builder =>'
             '            {'
             '                builder.AllowAnyOrigin()'
-            '                       .AllowAnyMethod()'
-            '                       .AllowAnyHeader()'
-            '                       .SetIsOriginAllowedToAllowWildcardSubdomains()'
-            '                       .AllowCredentials();'
+            '                .AllowAnyMethod()'
+            '                .AllowAnyHeader()'
+            '                .SetIsOriginAllowedToAllowWildcardSubdomains()'
+            '                .AllowCredentials();'
             '            }));'
             ''
             '            services.AddSwaggerGen(c =>'
             '            {'
-            '              c.SwaggerDoc("v1", new Info { Title = "My API", Version = "v1" });'
+            '                c.SwaggerDoc("v1", new Info { Title = "My API", Version = "v1" });'
             '            });'
         }
-
-        if ($_ -match "using System;") {
-            'using Swashbuckle.AspNetCore.Swagger;'
-            'using Microsoft.IdentityModel.Tokens;'
-            'using System.Security.Claims;'
-            'using System.Reflection;'
-            'using Microsoft.AspNetCore.Authentication.JwtBearer;'
-
-        }
         if ($_ -match "UseStaticFiles") {
-            '            // move  UseDefaultFiles to first line'       
+            '            // move  UseDefaultFiles to first line'
             '            // app.UseFileServer();'
             '            app.UseDefaultFiles();'
             '            app.UseSwagger();'
@@ -515,10 +812,9 @@ function Add-corsswagger-startupcs {
             '             app.UseCors("MyPolicy");'
         }
 
-    } 
-    $startupobj = $startupobj.replace(".AddEntityFrameworkStores<ApplicationDbContext>();", "// .AddEntityFrameworkStores<ApplicationDbContext>();")
+    }
+
     $startupobj | set-content  $fileName
-    
 }
 
 function Add-SignalR {
@@ -555,9 +851,9 @@ function Add-SignalR {
             return base.OnDisconnectedAsync(exception);
             }
         }
-        
+
         public static class extesions
-        {        
+        {
             public static void UseSignalRJwtAuthentication(this IApplicationBuilder app)
             {
                 app.Use(async (context, next) =>
@@ -583,7 +879,7 @@ function Add-SignalR {
     md Hubs
     $charcs | set-content  ".\Hubs\ChatHub.cs"
     $fileName = "$appFolder\Startup.cs"
-    (Get-Content $fileName) | 
+    (Get-Content $fileName) |
         Foreach-Object {
         $_ # send the current line to output
         if ($_ -match "AddMvc") {
@@ -604,29 +900,42 @@ function Add-SignalR {
     } | Set-Content $fileName
 }
 
-
 function Remove-project {
     Remove-Item -Path "$appFolder\*" -Recurse
     Set-Location -Path $dir
 }
 
-Set-Location -Path $appRootFolder
-new-dotnet
+function build-project {
+
+    Set-Location -Path $appRootFolder
+    new-dotnet
 
 
 
-dotnet add package "WebPush-netcore"
-dotnet add package "Microsoft.AspNetCore.Identity" -v 2.1.0
-dotnet add package "Microsoft.AspNetCore.Identity.UI" -v 2.1.0
-dotnet add package "Microsoft.AspNetCore.Identity.EntityFrameworkCore" -v 2.1.0
-dotnet add package "Swashbuckle.AspNetCore"
-Add-PushNotificationController
-Add-TokenController
-Add-SignalR
-dotnet restore
-dotnet build
-Add-corsswagger-startupcs
+<<<<<<< HEAD
+    # dotnet add package "WebPush-netcore"
+    # dotnet add package "Microsoft.AspNetCore.Identity" -v 2.1.0
+    # dotnet add package "Microsoft.AspNetCore.Identity.UI" -v 2.1.0
+    # dotnet add package "Microsoft.AspNetCore.Identity.EntityFrameworkCore" -v 2.1.0
+    # dotnet add package "Swashbuckle.AspNetCore"
+=======
+    dotnet add package "WebPush-netcore"
+    dotnet add package "Microsoft.AspNetCore.Identity" -v 2.1.0
+    dotnet add package "Microsoft.AspNetCore.Identity.UI" -v 2.1.0
+    dotnet add package "Microsoft.AspNetCore.Identity.EntityFrameworkCore" -v 2.1.0
+    dotnet add package "Swashbuckle.AspNetCore"
+>>>>>>> a18b4cc... builder module created
+    Add-PushNotificationController
+    Add-TokenController
+    Add-SignalR
+    dotnet restore
+    dotnet build
+<<<<<<< HEAD
+    Add-cors-swagger-startupcs
+=======
+    Add-corsswagger-startupcs
+>>>>>>> a18b4cc... builder module created
 
-
+}
 # dotnet add package IdentityServer4
 # dotnet add package IdentityModel
