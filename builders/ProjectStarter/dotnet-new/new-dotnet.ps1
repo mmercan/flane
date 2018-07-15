@@ -18,7 +18,6 @@ function Unzip($zipfile, $outdir) {
 }
 
 
-<<<<<<< HEAD
 # function Add-Folder {
 #     param($folder)
 #     $global:folder = $folder
@@ -30,34 +29,6 @@ function Unzip($zipfile, $outdir) {
 #     # $appFolder
 
 # }
-
-=======
-function Add-Folder {
-    param($folder)
-
-    # $folder = "AWWeb.Web.Sts"
-
-    $scriptpath = $MyInvocation.ScriptName # $MyInvocation.MyCommand.Path 
-    $dir = Split-Path $scriptpath
-
-    $appFolder = Join-Path -Path $dir -ChildPath ..\..\..\prototypes\identity\$folder
-    $appRootFolder = Join-Path -Path $dir -ChildPath ..\..\..\prototypes\identity
-    $appFolder
-
-}
-
-#$folder = "AWWeb.Web.Sts"
-#$scriptpath = $MyInvocation.MyCommand.Path 
-#$dir = Split-Path $scriptpath
-
-#$appFolder = Join-Path -Path $dir -ChildPath ..\..\prototypes\identity\$folder
-#$appRootFolder = Join-Path -Path $dir -ChildPath ..\..\prototypes\identity
-#$appFolder
-
-function new-dotnet-Individual {
-    dotnet new mvc --auth  Individual --output $folder
-    Set-Location -Path $appFolder
->>>>>>> a18b4cc... builder module created
 
 #$folder = "AWWeb.Web.Sts"
 #$scriptpath = $MyInvocation.MyCommand.Path 
@@ -74,7 +45,6 @@ function new-dotnet-Individual {
     $launchSettings = Get-Content $fileName  -raw
     $launchSettings = $launchSettings.replace('"applicationUrl": "https://localhost:5001;http://localhost:5000"', '"applicationUrl": "http://localhost:5000"')
     $launchSettings | set-content  $fileName
-<<<<<<< HEAD
 
     
 
@@ -83,32 +53,32 @@ function new-dotnet-Individual {
     dotnet add package "Microsoft.AspNetCore.Identity.UI" -v 2.1.0
     dotnet add package "Microsoft.AspNetCore.Identity.EntityFrameworkCore" -v 2.1.0
     dotnet add package "Swashbuckle.AspNetCore"
+    dotnet add package "Microsoft.AspNetCore.Mvc.Versioning"
 }
 
 
-function new-dotnet {
+function new-dotnet (
+    [string]$port = 5000
+) {
     dotnet new mvc # --output $folder
-    
+    $loc = '"applicationUrl": "http://localhost:' + $port + '"'
+
+
     $fileName = "./Properties/launchSettings.json"
     $launchSettings = Get-Content $fileName  -raw
-    $launchSettings = $launchSettings.replace('"applicationUrl": "https://localhost:5001;http://localhost:5000"', '"applicationUrl": "http://localhost:5000"')
+    $launchSettings = $launchSettings.replace('"applicationUrl": "https://localhost:5001;http://localhost:5000"', $loc)
     $launchSettings | set-content  $fileName
-
-    
 
     dotnet add package "WebPush-netcore"
     dotnet add package "Microsoft.AspNetCore.Identity" -v 2.1.0
     dotnet add package "Microsoft.AspNetCore.Identity.UI" -v 2.1.0
     dotnet add package "Microsoft.AspNetCore.Identity.EntityFrameworkCore" -v 2.1.0
     dotnet add package "Swashbuckle.AspNetCore"
+    dotnet add package "Microsoft.AspNetCore.Mvc.Versioning"
 }
 
-=======
-}
-
->>>>>>> a18b4cc... builder module created
 function Add-PushNotificationController {
-    $PushNotificationController = @' 
+    $PushNotificationController = @'
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -703,8 +673,6 @@ namespace __projectname__.Repositories
 
 function Add-Sts-startupcs {
 
-    
-
     $fileName = "$appFolder\Startup.cs"
     $startupobj = (Get-Content $fileName) |
         Foreach-Object {
@@ -776,6 +744,154 @@ function Add-Sts-startupcs {
     $startupobj | set-content  $fileName
 }
 
+function Add-Api-ConfigureJwtAuthService-startupcs {
+
+    $fileName = "$appFolder\Startup.cs"
+    $startupobj = (Get-Content $fileName) |
+        Foreach-Object {
+        $_ # send the current line to output
+        if ($_ -match "using System;") {
+            'using Microsoft.IdentityModel.Tokens;'
+            'using System.Security.Claims;'
+            'using Microsoft.AspNetCore.Authentication.JwtBearer;'
+            'using System.Text;'
+            '// using __projectname__.Models;'
+            '// using __projectname__.DbContexts;'
+            '// using __projectname__.Repositories;'
+        }
+        if ($_ -match "public IConfiguration Configuration") {
+            ''
+            '        public void ConfigureJwtAuthService(IServiceCollection services)'
+            '        {'
+            '             var audienceConfig = Configuration.GetSection("Tokens");'
+            '             var symmetricKeyAsBase64 = audienceConfig["Secret"];'
+            '             var keyByteArray = Encoding.ASCII.GetBytes(symmetricKeyAsBase64);'
+            '             var signingKey = new SymmetricSecurityKey(keyByteArray);'
+            ''
+            '            var tokenValidationParameters = new TokenValidationParameters'
+            '            {'
+            '                // The signing key must match!'
+            '                ValidateIssuerSigningKey = true,'
+            '                IssuerSigningKey = signingKey,'
+            ''
+            '                // Validate the JWT Issuer (iss) claim'
+            '                ValidateIssuer = true,'
+            '                ValidIssuer = audienceConfig["Issuer"],'
+            ''
+            '                // Validate the JWT Audience (aud) claim'
+            '                ValidateAudience = true,'
+            '                ValidAudience = audienceConfig["Audience"],'
+            ''
+            '                // Validate the token expiry'
+            '                ValidateLifetime = true,'
+            '' 
+            '                ClockSkew = TimeSpan.Zero'
+            '            };'
+            ''
+            '            services.AddAuthentication(options =>'
+            '            {'
+            '                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;'
+            '                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;'
+            '            })'
+            '          .AddJwtBearer("azure", cfg =>'
+            '          {'
+            '              cfg.RequireHttpsMetadata = false;'
+            '              cfg.SaveToken = true;'
+            '              cfg.Authority = Configuration["AzureAd:Instance"] + "/" + Configuration["AzureAD:TenantId"];'
+            '              cfg.Audience = Configuration["AzureAd:ClientId"];'
+            '          })'
+            '            .AddJwtBearer("sts",cfg =>'
+            '            {'
+            '                cfg.TokenValidationParameters = tokenValidationParameters;'
+            '            });'
+            '        }'
+        }
+        if ($_ -match "services.AddMvc()") {
+            '                       services.AddAuthentication();'
+            '                       ConfigureJwtAuthService(services);'
+            '                       //    .AddAzureAD(options => Configuration.Bind("AzureAd", options));'
+            ' '
+            '                                   services.AddMvc(options =>'
+            '                                   {'
+            '                                       // var policy = new AuthorizationPolicyBuilder()'
+            '                                       //     .RequireAuthenticatedUser()'
+            '                                       //     .Build();'
+            '                                       // options.Filters.Add(new AuthorizeFilter(policy));'
+            '                                   })'
+            '                                   .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);'
+        }
+        if ($_ -match "app.UseCookiePolicy()") {
+            ''
+            'app.UseAuthentication();'
+            ''
+
+        }
+        if ($_ -match ".AddEntityFrameworkStores<ApplicationDbContext>()") {
+            #Add Lines after the selected pattern
+            '           .AddDefaultTokenProviders();'
+            ''
+            '           services.Configure<TokenSettings>(Configuration.GetSection("Tokens"));'
+            '           services.AddScoped<ITokenRepository, TokenRepository>();'
+            '           services.AddAuthentication(sharedOptions =>'
+            '           {'
+            '               sharedOptions.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;'
+            '               sharedOptions.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;'
+            '           })'
+            '           .AddJwtBearer("azure", cfg =>'
+            '           {'
+            '               cfg.RequireHttpsMetadata = false;'
+            '               cfg.SaveToken = true;'
+            '               cfg.Authority = Configuration["AzureAd:Instance"] + "/" + Configuration["AzureAD:TenantId"];'
+            '               cfg.Audience = Configuration["AzureAd:ClientId"];'
+            '           })'
+            '           .AddJwtBearer("local", cfg =>'
+            '           {'
+            '               cfg.RequireHttpsMetadata = false;'
+            '               cfg.SaveToken = true;'
+            '               cfg.TokenValidationParameters = new TokenValidationParameters()'
+            '               {'
+            '                   ValidIssuer = Configuration["Tokens:Issuer"],'
+            '                   ValidAudience = Configuration["Tokens:Audience"],'
+            '                   IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(Configuration["Tokens:Secret"])),'
+            '                   RoleClaimType = ClaimTypes.Role'
+            '               };'
+            '           });'
+            ''
+            '           //use both jwt schemas interchangeably  https://stackoverflow.com/questions/49694383/use-multiple-jwt-bearer-authentication'
+            '           // services.AddAuthorization(options =>{options.DefaultPolicy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().AddAuthenticationSchemes("azure", "Custom").Build();});'
+            ''
+        }
+    }
+
+    $startupobj = $startupobj.replace(" services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);", " // services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);")
+    $startupobj = $startupobj.replace("__projectname__", $folder)
+    $startupobj | set-content  $fileName
+
+    $jobj = Get-Content '.\appsettings.json' -raw | ConvertFrom-Json
+    $tokens = @"
+    {
+        "Secret": "aHR0cDovL3d3dy5tbWVyY2FuLmNvbQ==",
+        "Issuer": "http://www.mmercan.com",
+        "Audience": "Matt Mercan",
+        "MultipleRefreshTokenEnabled": true
+    }
+"@
+    $AzureAd = @"
+{
+    "Instance": "https://login.microsoftonline.com/",
+    "Domain": "mrtmrcn.onmicrosoft.com",
+    "TenantId": "e1870496-eab8-42d0-8eb9-75fa94cfc3b8",
+    "ClientId": "67d009b1-97fe-4963-84ff-3590b06df0da",
+    "CallbackPath": "/signin-oidc"
+  }
+
+"@
+    $jobj| add-member -Name "Tokens" -value (Convertfrom-Json $tokens) -MemberType NoteProperty
+    $jobj| add-member -Name "AzureAd" -value (Convertfrom-Json $AzureAd) -MemberType NoteProperty
+    $json = $jobj| ConvertTo-Json -Depth 5
+    $json | set-content  '.\appsettings.json'
+
+}
 function Add-cors-swagger-startupcs {
 
     $fileName = "$appFolder\Startup.cs"
@@ -912,29 +1028,17 @@ function build-project {
 
 
 
-<<<<<<< HEAD
     # dotnet add package "WebPush-netcore"
     # dotnet add package "Microsoft.AspNetCore.Identity" -v 2.1.0
     # dotnet add package "Microsoft.AspNetCore.Identity.UI" -v 2.1.0
     # dotnet add package "Microsoft.AspNetCore.Identity.EntityFrameworkCore" -v 2.1.0
     # dotnet add package "Swashbuckle.AspNetCore"
-=======
-    dotnet add package "WebPush-netcore"
-    dotnet add package "Microsoft.AspNetCore.Identity" -v 2.1.0
-    dotnet add package "Microsoft.AspNetCore.Identity.UI" -v 2.1.0
-    dotnet add package "Microsoft.AspNetCore.Identity.EntityFrameworkCore" -v 2.1.0
-    dotnet add package "Swashbuckle.AspNetCore"
->>>>>>> a18b4cc... builder module created
     Add-PushNotificationController
     Add-TokenController
     Add-SignalR
     dotnet restore
     dotnet build
-<<<<<<< HEAD
     Add-cors-swagger-startupcs
-=======
-    Add-corsswagger-startupcs
->>>>>>> a18b4cc... builder module created
 
 }
 # dotnet add package IdentityServer4
