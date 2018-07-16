@@ -46,7 +46,6 @@ function new-dotnet-Individual {
     $launchSettings = $launchSettings.replace('"applicationUrl": "https://localhost:5001;http://localhost:5000"', '"applicationUrl": "http://localhost:5000"')
     $launchSettings | set-content  $fileName
 
-    
 
     dotnet add package "WebPush-netcore"
     dotnet add package "Microsoft.AspNetCore.Identity" -v 2.1.0
@@ -54,12 +53,11 @@ function new-dotnet-Individual {
     dotnet add package "Microsoft.AspNetCore.Identity.EntityFrameworkCore" -v 2.1.0
     dotnet add package "Swashbuckle.AspNetCore"
     dotnet add package "Microsoft.AspNetCore.Mvc.Versioning"
+    dotnet add package "Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer"
 }
 
 
-function new-dotnet (
-    [string]$port = 5000
-) {
+function new-dotnet ([string]$port = 5000) {
     dotnet new mvc # --output $folder
     $loc = '"applicationUrl": "http://localhost:' + $port + '"'
 
@@ -75,6 +73,7 @@ function new-dotnet (
     dotnet add package "Microsoft.AspNetCore.Identity.EntityFrameworkCore" -v 2.1.0
     dotnet add package "Swashbuckle.AspNetCore"
     dotnet add package "Microsoft.AspNetCore.Mvc.Versioning"
+    dotnet add package "Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer"
 }
 
 function Add-PushNotificationController {
@@ -114,7 +113,6 @@ namespace __projectname__.Controllers
             //TODO: Implement Realistic Implementation
             // return Content("Blahhh");
             // return Ok("Blah");
-            
             return Content("Blah");
         }
 
@@ -681,6 +679,7 @@ function Add-Sts-startupcs {
             'using Microsoft.IdentityModel.Tokens;'
             'using System.Security.Claims;'
             'using Microsoft.AspNetCore.Authentication.JwtBearer;'
+            'using Microsoft.AspNetCore.Authorization;'
             'using __projectname__.Models;'
             'using __projectname__.DbContexts;'
             'using __projectname__.Repositories;'
@@ -723,7 +722,10 @@ function Add-Sts-startupcs {
             '           });'
             ''
             '           //use both jwt schemas interchangeably  https://stackoverflow.com/questions/49694383/use-multiple-jwt-bearer-authentication'
-            '           // services.AddAuthorization(options =>{options.DefaultPolicy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().AddAuthenticationSchemes("azure", "Custom").Build();});'
+            '           services.AddAuthorization(options =>'
+            '           {'
+            '               options.DefaultPolicy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().AddAuthenticationSchemes("azure", "sts").Build();'
+            '           });'
             ''
         }
         # if ($_ -match "UseStaticFiles") {
@@ -755,6 +757,7 @@ function Add-Api-ConfigureJwtAuthService-startupcs {
             'using System.Security.Claims;'
             'using Microsoft.AspNetCore.Authentication.JwtBearer;'
             'using System.Text;'
+            'using Microsoft.AspNetCore.Authorization;'
             '// using __projectname__.Models;'
             '// using __projectname__.DbContexts;'
             '// using __projectname__.Repositories;'
@@ -784,7 +787,7 @@ function Add-Api-ConfigureJwtAuthService-startupcs {
             ''
             '                // Validate the token expiry'
             '                ValidateLifetime = true,'
-            '' 
+            ''
             '                ClockSkew = TimeSpan.Zero'
             '            };'
             ''
@@ -804,21 +807,27 @@ function Add-Api-ConfigureJwtAuthService-startupcs {
             '            {'
             '                cfg.TokenValidationParameters = tokenValidationParameters;'
             '            });'
+            '           //use both jwt schemas interchangeably  https://stackoverflow.com/questions/49694383/use-multiple-jwt-bearer-authentication'
+            '           services.AddAuthorization(options =>'
+            '           {'
+            '               options.DefaultPolicy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().AddAuthenticationSchemes("azure", "sts").Build();'
+            '           });'
+
             '        }'
         }
-        if ($_ -match "services.AddMvc()") {
-            '                       services.AddAuthentication();'
-            '                       ConfigureJwtAuthService(services);'
-            '                       //    .AddAzureAD(options => Configuration.Bind("AzureAd", options));'
+        if ($_ -match "services.AddMvcCore()") {
+            '       services.AddAuthentication();'
+            '       // .AddAzureAD(options => Configuration.Bind("AzureAd", options));'
+            '       ConfigureJwtAuthService(services);'
             ' '
-            '                                   services.AddMvc(options =>'
-            '                                   {'
-            '                                       // var policy = new AuthorizationPolicyBuilder()'
-            '                                       //     .RequireAuthenticatedUser()'
-            '                                       //     .Build();'
-            '                                       // options.Filters.Add(new AuthorizeFilter(policy));'
-            '                                   })'
-            '                                   .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);'
+            '       services.AddMvc(options =>'
+            '       {'
+            '             // var policy = new AuthorizationPolicyBuilder()'
+            '             //     .RequireAuthenticatedUser()'
+            '             //     .Build();'
+            '             // options.Filters.Add(new AuthorizeFilter(policy));'
+            '       })'
+            '       .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);'
         }
         if ($_ -match "app.UseCookiePolicy()") {
             ''
@@ -858,12 +867,12 @@ function Add-Api-ConfigureJwtAuthService-startupcs {
             '           });'
             ''
             '           //use both jwt schemas interchangeably  https://stackoverflow.com/questions/49694383/use-multiple-jwt-bearer-authentication'
-            '           // services.AddAuthorization(options =>{options.DefaultPolicy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().AddAuthenticationSchemes("azure", "Custom").Build();});'
+            '            services.AddAuthorization(options =>{options.DefaultPolicy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().AddAuthenticationSchemes("azure", "Custom").Build();});'
             ''
         }
     }
 
-    $startupobj = $startupobj.replace(" services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);", " // services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);")
+    $startupobj = $startupobj.replace(" services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);", " ")
     $startupobj = $startupobj.replace("__projectname__", $folder)
     $startupobj | set-content  $fileName
 
@@ -900,6 +909,9 @@ function Add-cors-swagger-startupcs {
         $_ # send the current line to output
         if ($_ -match "using System;") {
             'using Swashbuckle.AspNetCore.Swagger;'
+            'using Microsoft.AspNetCore.Mvc.ApiExplorer;'
+            'using Microsoft.Extensions.Logging;'
+            'using Microsoft.AspNetCore.Mvc.Versioning;'
         }
         if ($_ -match "services.AddMvc()") {
             '            services.AddCors(o => o.AddPolicy("MyPolicy", builder =>'
@@ -911,9 +923,26 @@ function Add-cors-swagger-startupcs {
             '                .AllowCredentials();'
             '            }));'
             ''
-            '            services.AddSwaggerGen(c =>'
+            '            services.AddApiVersioning(o =>'
             '            {'
-            '                c.SwaggerDoc("v1", new Info { Title = "My API", Version = "v1" });'
+            '                o.AssumeDefaultVersionWhenUnspecified = true;'
+            '                o.DefaultApiVersion = new ApiVersion(1, 0);'
+            '                o.ApiVersionReader = new HeaderApiVersionReader("api-version");'
+            '            });'
+            ''
+            '            services.AddSwaggerGen(options =>'
+            '            {'
+            '                var provider = services.BuildServiceProvider().GetRequiredService<IApiVersionDescriptionProvider>();'
+            '                foreach (var description in provider.ApiVersionDescriptions)'
+            '                {'
+            '                    options.SwaggerDoc('
+            '                    description.GroupName,'
+            '                    new Info()'
+            '                    {'
+            '                        Title = $"Sample API {description.ApiVersion}",'
+            '                        Version = description.ApiVersion.ToString()'
+            '                    });'
+            '                }'
             '            });'
         }
         if ($_ -match "UseStaticFiles") {
@@ -921,18 +950,23 @@ function Add-cors-swagger-startupcs {
             '            // app.UseFileServer();'
             '            app.UseDefaultFiles();'
             '            app.UseSwagger();'
-            '            app.UseSwaggerUI(c =>'
-            '            {'
-            '              c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");'
-            '            });'
+            '            app.UseSwaggerUI(options =>'
+            '                {'
+            '                    foreach (var description in provider.ApiVersionDescriptions)'
+            '                    {'
+            '                        options.SwaggerEndpoint('
+            '                            $"/swagger/{description.GroupName}/swagger.json",'
+            '                            description.GroupName.ToUpperInvariant());'
+            '                    }'
+            '                });'
             '             app.UseCors("MyPolicy");'
         }
 
     }
-
+    $startupobj = $startupobj.replace("services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);", "services.AddMvcCore().AddVersionedApiExplorer( o => o.GroupNameFormat = `"'v'VVV`" ); `n services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);")
+    $startupobj = $startupobj.replace("IApplicationBuilder app, IHostingEnvironment env", "IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory,IApiVersionDescriptionProvider provider")
     $startupobj | set-content  $fileName
 }
-
 function Add-SignalR {
     dotnet add package Microsoft.AspNetCore.SignalR -v 1.0.0
 
@@ -1015,6 +1049,63 @@ function Add-SignalR {
         }
     } | Set-Content $fileName
 }
+
+function Add-TestApis {
+    new-item -type directory -path $appFolder\Controllers\Apis -Force
+
+    $ProductV1 = @'
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Threading.Tasks;
+    using Microsoft.AspNetCore.Authorization;
+    using Microsoft.AspNetCore.Http;
+    using Microsoft.AspNetCore.Mvc;
+
+    namespace __projectname__.Controllers
+    {
+        [ApiVersion("1.0", Deprecated = true)]
+        [Route("api/Product")]
+        //[Route("api/v{version:apiVersion}/Product")]
+        [ApiController]
+        public class ProductV1Controller : ControllerBase
+        {
+            [HttpGet]
+            [Authorize]
+            public string Get() => "Hello world v1!";
+        }
+    }
+'@
+    $ProductV1 = $ProductV1.replace("__projectname__", $folder)
+    $ProductV1 | set-content  ".\Controllers\Apis\ProductV1.cs"
+
+
+    $ProductV2 = @'
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Threading.Tasks;
+    using Microsoft.AspNetCore.Authorization;
+    using Microsoft.AspNetCore.Http;
+    using Microsoft.AspNetCore.Mvc;
+
+    namespace __projectname__.Controllers
+    {
+        [ApiVersion("2.0")]
+        [Route("api/Product")]
+        //[Route("api/v{version:apiVersion}/Product")]
+        [ApiController]
+        public class ProductV2Controller : ControllerBase
+        {
+            [HttpGet]
+            public string Get() => "Hello world v2!";
+        }
+    }
+'@
+    $ProductV2 = $ProductV2.replace("__projectname__", $folder)
+    $ProductV2 | set-content  ".\Controllers\Apis\ProductV2.cs"
+}
+
 
 function Remove-project {
     Remove-Item -Path "$appFolder\*" -Recurse

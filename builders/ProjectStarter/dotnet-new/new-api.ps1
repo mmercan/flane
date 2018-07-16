@@ -16,6 +16,8 @@ new-dotnet -port 5003
 Add-cors-swagger-startupcs
 Add-Api-ConfigureJwtAuthService-startupcs
 
+Add-TestApis
+
 #Add-PushNotificationController
 #Add-TokenController
 #Add-SignalR
