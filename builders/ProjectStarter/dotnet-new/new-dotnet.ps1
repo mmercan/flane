@@ -1050,6 +1050,133 @@ function Add-SignalR {
     } | Set-Content $fileName
 }
 
+function Add-Logger {
+
+    new-item -type directory -path $appFolder\Middlewares -Force
+
+    dotnet add package "Serilog.AspNetCore"
+    dotnet add package "Serilog.Sinks.Console"
+    dotnet add package "Serilog.Sinks.File"
+  #  dotnet add package "Serilog.Sinks.LogstashHttp"
+    dotnet add package "Serilog.Settings.Configuration"
+    dotnet add package "Serilog.Sinks.Loggly"
+    dotnet add package "Serilog.Sinks.ElasticSearch"
+
+    $fileName = "$appFolder\Startup.cs"
+    (Get-Content $fileName) |
+        Foreach-Object {
+        $_ # send the current line to output
+        if ($_ -match "using System;") {
+            'using Serilog;'
+            'using Serilog.Events;'
+        }
+        if ($_ -match "UseStaticFiles") {
+            '            var logger = new LoggerConfiguration()'
+            '            .ReadFrom.Configuration(Configuration)'
+            '            .Enrich.FromLogContext()'
+            '            .Enrich.WithProperty("Enviroment", env.EnvironmentName)'
+            '            .Enrich.WithProperty("ApplicationName", "Api App")'
+            '            .MinimumLevel.Override("Microsoft", LogEventLevel.Information)'
+            '            .WriteTo.Console()'
+            '            .WriteTo.File("Logs/logs.txt");'
+            '            //.WriteTo.Elasticsearch()'
+            ''
+            '            logger.WriteTo.Console();'
+            '            loggerFactory.AddSerilog();'
+            '            Log.Logger = logger.CreateLogger();'
+            '            app.UseExceptionLogger();'
+        }
+    } | Set-Content $fileName
+
+    $jobj = Get-Content '.\appsettings.json' -raw | ConvertFrom-Json
+    $Serilog = @"
+    {
+        "Using": ["Serilog.Sinks.File"],
+        "MinimumLevel": "Information",
+        "WriteTo": [{
+            "Name": "File",
+            "Args": {
+                "path": "Logs\\logs.txt",
+                "rollingInterval": "Day",
+                "outputTemplate": "{Timestamp:dd-MMM-yyyy HH:mm:ss.fff zzz} [{Level:u3}] [{Enviroment}] {Message:lj}{NewLine}{Exception}{ActionName} {RequestPath}{NewLine}{Exception}{NewLine}"
+            }
+        }]
+    }
+"@
+
+        $jobj| add-member -Name "Serilog" -value (Convertfrom-Json $Serilog) -MemberType NoteProperty
+        $json = $jobj| ConvertTo-Json -Depth 5
+        $json | set-content  '.\appsettings.json'
+
+        $ExceptionLoggerMiddleware = @"
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+
+namespace __projectname__
+{
+    public class ExceptionLoggerMiddleware
+    {
+        private readonly RequestDelegate _next;
+        private readonly DeveloperExceptionPageOptions _options;
+        private readonly ILogger _logger;
+
+        public ExceptionLoggerMiddleware(
+            RequestDelegate next,
+            IOptions<ExceptionLoggerOptions> options,
+            ILoggerFactory loggerFactory
+            )
+        {
+
+            _logger = loggerFactory.CreateLogger<ExceptionLoggerMiddleware>();
+            _next = next;
+        }
+
+        public async Task Invoke(HttpContext httpContext)
+        {
+            try
+            {
+                await _next(httpContext);
+            }
+            catch (Exception ex)
+            {
+
+                var unhandledException = LoggerMessage.Define(LogLevel.Error, new EventId(1, "UnhandledException"), "An unhandled exception has occurred while executing the request.");
+                unhandledException(_logger, ex);
+
+
+                if (httpContext.Response.HasStarted)
+                {
+                }
+                throw;
+            }
+        }
+    }
+    public class ExceptionLoggerOptions
+    {
+        public string Name { get; set; }
+    }
+
+    // Extension method used to add the middleware to the HTTP request pipeline.
+    public static class ExceptionLoggerMiddlewareExtensions
+    {
+        public static IApplicationBuilder UseExceptionLogger(this IApplicationBuilder builder)
+        {
+            return builder.UseMiddleware<ExceptionLoggerMiddleware>();
+        }
+    }
+}
+
+"@
+            $ExceptionLoggerMiddleware = $ExceptionLoggerMiddleware.replace("__projectname__", $folder)
+            $ExceptionLoggerMiddleware | set-content  ".\Middlewares\ExceptionLoggerMiddleware.cs"
+
+}
 function Add-TestApis {
     new-item -type directory -path $appFolder\Controllers\Apis -Force
 

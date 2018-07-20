@@ -14,6 +14,7 @@ Write-Host "appFolder: $appFolder"
 set-location -Path $appFolder
 new-dotnet -port 5003
 Add-cors-swagger-startupcs
+Add-Logger
 Add-Api-ConfigureJwtAuthService-startupcs
 
 Add-TestApis
