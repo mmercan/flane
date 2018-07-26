@@ -1,0 +1,10 @@
+version: '3.4'
+
+services:  
+  ci-build:
+    image: microsoft/dotnet:2.1-sdk
+    container_name: build
+    volumes:
+      - C:\Repositories\flane\prototypes\aspcoredocker:C:\app
+    working_dir: C:\app
+    command: "dotnet watch run"

@@ -1,0 +1,17 @@
+version: '3.4'
+
+services:
+  webapplication9:
+    image: myapp
+    build:
+      context: .
+      dockerfile: myapp\Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+      - "80"
+
+networks:
+  default:
+    external:
+      name: nat
