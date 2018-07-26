@@ -21,7 +21,9 @@ $apiFolder = Join-Path -Path $dir -ChildPath .\dockapp
 # docker run --rm -it -p 8000:80 -v C:\Repositories\flane\prototypes\dockerplay\dockapp:C:\app\ -w /app/aspnetapp microsoft/dotnet:2.1-sdk dotnet watch run
 # docker run --rm -it -p 5000:5000 -v C:\Repositories\flane\prototypes\dockerplay\dockapp:c:\app\ -w \app\myapp --name aspnetappsample microsoft/dotnet:2.1-sdk  dotnet watch run
 
-
+# '--platform=linux
 docker rm $(docker ps -a -q)
 
-docker-compose -f docker-compose.develop.yml up --build
+# docker-compose -f docker-compose.develop.yml up --build
+
+docker-compose -f docker-compose.linux.develop.yml up --build
