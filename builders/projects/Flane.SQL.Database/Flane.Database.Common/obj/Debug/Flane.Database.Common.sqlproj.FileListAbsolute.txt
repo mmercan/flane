@@ -1,0 +1,5 @@
+C:\Users\mmercan\Documents\Visual Studio 2017\Projects\Flane.Database.Common\bin\Debug\Flane.Database.Common.dacpac
+C:\Users\mmercan\Documents\Visual Studio 2017\Projects\Flane.Database.Common\bin\Debug\Flane.Database.Common.dll
+C:\Users\mmercan\Documents\Visual Studio 2017\Projects\Flane.Database.Common\bin\Debug\Flane.Database.Common.pdb
+C:\Users\mmercan\Documents\Visual Studio 2017\Projects\Flane.Database.Common\obj\Debug\Flane.Database.Common.dll
+C:\Users\mmercan\Documents\Visual Studio 2017\Projects\Flane.Database.Common\obj\Debug\Flane.Database.Common.pdb

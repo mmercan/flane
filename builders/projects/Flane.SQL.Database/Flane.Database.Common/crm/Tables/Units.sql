@@ -1,0 +1,8 @@
+﻿CREATE TABLE [crm].[Units] (
+    [ID]       UNIQUEIDENTIFIER NOT NULL,
+    [BaseID]   UNIQUEIDENTIFIER NULL,
+    [Name]     NVARCHAR (100)   NULL,
+    [Quantity] DECIMAL (23, 10) NULL,
+    CONSTRAINT [PK_Units] PRIMARY KEY CLUSTERED ([ID] ASC)
+);
+
