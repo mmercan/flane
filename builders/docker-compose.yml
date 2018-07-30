@@ -7,9 +7,14 @@ services:
     #signalR
   Flane.Web.CMS:
   Flane.Web.Products:
+  Flane.Web.ClassRoster:
   Flane.Web.Sales:
   Flane.Web.B2B:
   Flane.Web.Admin:
+  Flane.Api.Products:
+  Flane.Api.ClassRoster:
+  Flane.Api.Sales:
+  Flane.Api.News:
   Flane.Db.Mongo:
   Flane.Db.Sql:
   Flane.Db.Redis:
