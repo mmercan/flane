@@ -1,0 +1,82 @@
+27-Jul-18 4:45:21 PM	This log contains information about the import schema operation into project 'Flane.Database.Common' on computer 'DESKTOP-BPII75J' by user 'mmercan'.
+27-Jul-18 4:45:24 PM	Import of database schema has started.
+27-Jul-18 4:45:49 PM	Gathering logins
+27-Jul-18 4:53:55 PM	Gathering database credentials
+27-Jul-18 4:53:55 PM	Gathering database options
+27-Jul-18 4:53:55 PM	Gathering generic database scoped configuration option
+27-Jul-18 4:53:55 PM	Gathering users
+27-Jul-18 4:53:55 PM	Gathering roles
+27-Jul-18 4:53:55 PM	Gathering application roles
+27-Jul-18 4:53:55 PM	Gathering role memberships
+27-Jul-18 4:53:55 PM	Gathering filegroups
+27-Jul-18 4:53:55 PM	Gathering full-text catalogs
+27-Jul-18 4:53:56 PM	Gathering assemblies
+27-Jul-18 4:53:56 PM	Gathering certificates
+27-Jul-18 4:53:56 PM	Gathering symmetric keys
+27-Jul-18 4:53:56 PM	Gathering encrypted symmetric keys
+27-Jul-18 4:53:56 PM	Gathering schemas
+27-Jul-18 4:53:56 PM	Gathering XML schema collections
+27-Jul-18 4:53:56 PM	Gathering user-defined data types
+27-Jul-18 4:53:56 PM	Gathering user-defined types
+27-Jul-18 4:53:56 PM	Gathering table types
+27-Jul-18 4:53:56 PM	Gathering unique keys for table types
+27-Jul-18 4:53:56 PM	Gathering primary keys for table types
+27-Jul-18 4:53:56 PM	Gathering indexes for table types
+27-Jul-18 4:53:56 PM	Gathering check constraints for table types
+27-Jul-18 4:53:56 PM	Gathering default constraints for table types
+27-Jul-18 4:53:56 PM	Gathering partition functions
+27-Jul-18 4:53:56 PM	Gathering partition schemes
+27-Jul-18 4:53:56 PM	Gathering functions
+27-Jul-18 4:53:57 PM	Gathering encrypted functions
+27-Jul-18 4:53:57 PM	Gathering aggregates
+27-Jul-18 4:53:57 PM	Gathering procedures
+27-Jul-18 4:53:57 PM	Gathering encrypted procedures
+27-Jul-18 4:53:57 PM	Gathering tables
+27-Jul-18 4:53:59 PM	Gathering primary keys
+27-Jul-18 4:54:00 PM	Gathering unique constraints
+27-Jul-18 4:54:00 PM	Gathering foreign keys
+27-Jul-18 4:54:00 PM	Gathering default constraints
+27-Jul-18 4:54:00 PM	Gathering check constraints
+27-Jul-18 4:54:00 PM	Gathering views
+27-Jul-18 4:54:00 PM	Gathering encrypted views
+27-Jul-18 4:54:01 PM	Gathering indexes
+27-Jul-18 4:54:01 PM	Gathering statistics
+27-Jul-18 4:54:01 PM	Gathering full-text index stoplists
+27-Jul-18 4:54:01 PM	Gathering search property lists
+27-Jul-18 4:54:01 PM	Gathering search properties
+27-Jul-18 4:54:01 PM	Gathering full-text indexes
+27-Jul-18 4:54:01 PM	Gathering column store indexes
+27-Jul-18 4:54:01 PM	Gathering spatial indexes
+27-Jul-18 4:54:01 PM	Gathering XML indexes
+27-Jul-18 4:54:01 PM	Gathering Selective XML indexes
+27-Jul-18 4:54:01 PM	Gathering encrypted triggers
+27-Jul-18 4:54:01 PM	Gathering triggers
+27-Jul-18 4:54:01 PM	Gathering encrypted and clr ddl triggers
+27-Jul-18 4:54:01 PM	Gathering ddl triggers
+27-Jul-18 4:54:01 PM	Gathering synonyms
+27-Jul-18 4:54:01 PM	Gathering defaults
+27-Jul-18 4:54:01 PM	Gathering data constraint uddt bindings
+27-Jul-18 4:54:01 PM	Gathering rules
+27-Jul-18 4:54:01 PM	Gathering data constraint uddt bindings
+27-Jul-18 4:54:01 PM	Gathering message types
+27-Jul-18 4:54:01 PM	Gathering queues
+27-Jul-18 4:54:01 PM	Gathering contracts
+27-Jul-18 4:54:01 PM	Gathering services
+27-Jul-18 4:54:01 PM	Gathering event notifications
+27-Jul-18 4:54:01 PM	Gathering remote service bindings
+27-Jul-18 4:54:01 PM	Gathering broker priorities
+27-Jul-18 4:54:01 PM	Gathering signatures
+27-Jul-18 4:54:01 PM	Gathering data compression options
+27-Jul-18 4:54:02 PM	Gathering sequence types
+27-Jul-18 4:54:02 PM	Gathering security policies
+27-Jul-18 4:54:02 PM	Gather column encryption keys
+27-Jul-18 4:54:02 PM	Gathering column master keys
+27-Jul-18 4:54:02 PM	Gathering external data sources
+27-Jul-18 4:54:02 PM	Gathering external tables
+27-Jul-18 4:54:02 PM	Gathering extended properties
+27-Jul-18 4:54:08 PM	Gathering logins
+27-Jul-18 4:54:15 PM	Scanning project for duplicate elements
+27-Jul-18 4:54:16 PM	Finished duplicate element processing
+27-Jul-18 4:54:17 PM	Finished importing database.
+27-Jul-18 4:54:17 PM	A summary of the import was saved to the following location: C:\Users\mmercan\Documents\Visual Studio 2017\Projects\Flane.Database.Common\Import Schema Logs\Flane.Database.Commo_20180727064521.log
+27-Jul-18 4:54:17 PM	Click Finish to continue...
