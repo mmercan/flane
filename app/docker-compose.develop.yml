@@ -1,21 +1,20 @@
 version: '3.4'
 
 services:
-  Flane.Web.Arr:
+  Flane-Web-Arr:
+    image: flane-web-arr:${FLANE_VERSION}-dev
 
-  Flane.Web.STS:
-      build:
-        target: develop-linux
-      environment:
+  Flane-Web-STS:
+    image: flane.web.sts:${FLANE_VERSION}-dev
+    environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - DOTNET_USE_POLLING_FILE_WATCHER=1
       - ${SQLCONNECTION}
     volumes:
-      - ${PROJECTLOCATION}\Flane.Web.Arr:/src/
+      - C:\Repositories\flane\app\Flane.Web.Arr:/src/
     entrypoint: dotnet watch run --verbose --no-launch-profile --configuration Debug
 
-#signalR
-  Flane.Web.Comms:
+  Flane-Web-Comms:
     image: flane.web.comms:v1
     build:
       context: .
@@ -24,7 +23,7 @@ services:
       - "8082"
 
     
-  Flane.Web.CMS:
+  Flane-WebCMS:
     image: flane.web.cms:v1
     build:
       context: .
@@ -115,11 +114,6 @@ services:
 
   Flane.Db.Sql:
     image: flane.db.sql:v1
-    build:
-      context: .
-      dockerfile: Flane.Db.Sql\Dockerfile  
-    ports:
-      - "8094"
 
   Flane.Db.Redis:
     image: flane.db.redis:v1

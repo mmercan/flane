@@ -10,9 +10,9 @@ RUN msbuild Flane.Database.Common.sqlproj `
 
 FROM microsoft/mssql-server-windows-developer:2016-sp1
 
-ENV ACCEPT_EULA="Y" `
-    DATA_PATH="C:\data" `
-    sa_password="DockerCon!!!"
+# ENV ACCEPT_EULA="Y" `
+#     DATA_PATH="C:\data" `
+#     sa_password="DockerCon!!!"
 
 VOLUME ${DATA_PATH}
 WORKDIR C:\init

@@ -1,15 +1,15 @@
 version: '3.4'
 
 services:
-  Flane.Web.Arr:
-    image: flane.web.arr:${FLANE_VERSION}
+  Flane-Web-Arr:
+    image: flane-web-arr:${FLANE_VERSION}
     build:
       context: .
       dockerfile: Flane.Web.Arr\Dockerfile
     ports:
       - "8080"
 
-  Flane.Web.STS:
+  Flane-Web-STS:
     image: flane.web.sts:v1
     build:
       context: .
@@ -20,8 +20,8 @@ services:
       - "8081"
 
 #signalR
-  Flane.Web.Comms:
-    image: flane.web.comms:v1
+  Flane-Web-Comms:
+    image: flane-web-comms:v1
     build:
       context: .
       dockerfile: Flane.Web.Comms\Dockerfile  
@@ -29,8 +29,8 @@ services:
       - "8082"
 
     
-  Flane.Web.CMS:
-    image: flane.web.cms:v1
+  Flane-Web-CMS:
+    image: flane-web-cms:v1
     build:
       context: .
       dockerfile: Flane.Web.CMS\Dockerfile 
@@ -130,9 +130,17 @@ services:
     image: flane.db.sql:v1
     build:
       context: .
-      dockerfile: Flane.Db.Sql\Dockerfile  
+      dockerfile: Flane.Sql.Database\Dockerfile  
+    environment:
+      sa_password: "Password1"
+      ACCEPT_EULA: "Y"
+      DATA_PATH: "C:\\data"
     ports:
-      - "8094"
+      - "1433:1433" # REMARK: This is currently required, needs investigation
+    healthcheck:
+      test: [ "CMD", "sqlcmd", "-U", "sa", "-P", "Password1", "-Q", "select 1" ]
+      interval: 1s
+      retries: 30
 
   Flane.Db.Redis:
     image: flane.db.redis:v1
@@ -164,7 +172,7 @@ services:
       context: .
       dockerfile: Flane.Handlers.Sales\Dockerfile    
     depends_on:
-      - db    
+      - Flane.Db.Sql    
     ports:
       - "8098"
 
@@ -174,7 +182,7 @@ services:
       context: .
       dockerfile: Flane.Handles.Product\Dockerfile    
     depends_on:
-      - db    
+      - Flane.Db.Sql    
     ports:
       - "8099"
 
@@ -184,7 +192,7 @@ services:
       context: .
       dockerfile: Flane.Mon.Kinaba\Dockerfile    
     depends_on:
-      - db    
+      - Flane.Db.Sql    
     ports:
       - "8101"
 
@@ -194,7 +202,7 @@ services:
       context: .
       dockerfile: Flane.Mon.Prometheus\Dockerfile
     depends_on:
-      - db    
+      - Flane.Db.Sql    
     ports:
       - "8102"
 
@@ -204,7 +212,7 @@ services:
       context: .
       dockerfile: Flane.Comm.MailServer\Dockerfile
     depends_on:
-      - db    
+      - Flane.Db.Sql    
     ports:
       - "8103"
 
