@@ -1,0 +1,22 @@
+version: '3.4'
+
+services:
+  myapp-develop:
+    image: myapp:dev-linux
+    build:
+      target: develop
+      context: .
+      dockerfile: myapp\Dockerfile.linux.develop
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - DOTNET_USE_POLLING_FILE_WATCHER=1
+    volumes:
+      - C:\Repositories\flane\prototypes\dockerplay\dockapp:/src/
+    entrypoint: dotnet watch -p myapp run --no-launch-profile
+    ports:
+      - "80"
+
+networks:
+  default:
+    external:
+      name: nat

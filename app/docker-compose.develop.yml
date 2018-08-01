@@ -1,0 +1,187 @@
+version: '3.4'
+
+services:
+  Flane-Web-Arr:
+    image: flane-web-arr:${FLANE_VERSION}-dev
+
+  Flane-Web-STS:
+    image: flane.web.sts:${FLANE_VERSION}-dev
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - DOTNET_USE_POLLING_FILE_WATCHER=1
+      - ${SQLCONNECTION}
+    volumes:
+      - C:\Repositories\flane\app\Flane.Web.Arr:/src/
+    entrypoint: dotnet watch run --verbose --no-launch-profile --configuration Debug
+
+  Flane-Web-Comms:
+    image: flane.web.comms:v1
+    build:
+      context: .
+      dockerfile: Flane.Web.Comms\Dockerfilel    
+    ports:
+      - "8082"
+
+    
+  Flane-WebCMS:
+    image: flane.web.cms:v1
+    build:
+      context: .
+      dockerfile: Flane.Web.CMS\Dockerfile  
+    ports:
+      - "8083"
+
+  Flane.Web.Products:
+    image: flane.web.products:v1
+    build:
+      context: .
+      dockerfile: Flane.Web.Products\Dockerfile   
+    ports:
+      - "8084"
+
+  Flane.Web.ClassRoster:
+    image: flane.web.classroster:v1
+    build:
+      target: develop-linux
+      context: .
+      dockerfile: Flane.Web.ClassRoster\Dockerfile   
+    ports:
+      - "8085"
+
+  Flane.Web.Sales:
+    image: flane.web.sales:v1
+    build:
+      context: .
+      dockerfile: Flane.Web.Sales\Dockerfile   
+    ports:
+      - "8086"
+
+  Flane.Web.B2B:
+    image: flane.web.b2b:v1
+    build:
+      context: .
+      dockerfile: Flane.Web.B2B\Dockerfile  
+    ports:
+      - "8087"
+
+  Flane.Web.Admin:
+    image: flane.web.admin:v1
+    build:
+      context: .
+      dockerfile: Flane.Web.Admin\Dockerfile 
+    ports:
+      - "8088"
+
+  Flane.Api.Products:
+    image: flane.api.products:v1
+    build:
+      context: .
+      dockerfile: Flane.Api.Products\Dockerfile  
+    ports:
+      - "8089"
+
+  Flane.Api.ClassRoster:
+    image: flane.api.classroster:v1
+    build:
+      context: .
+      dockerfile: Flane.Api.ClassRoster\Dockerfile
+    ports:
+      - "8101"
+
+  Flane.Api.Sales:
+    image: flane.api.sales:v1
+    build:
+      context: .
+      dockerfile: Flane.Api.Sales\Dockerfile   
+    ports:
+      - "8102"
+
+  Flane.Api.News:
+    image: flane.api.news:v1
+    build:
+      context: .
+      dockerfile: Flane.Api.News\Dockerfile   
+    ports:
+      - "8103"
+
+  Flane.Db.Mongo:
+    image: flane.db.mongo:v1
+    build:
+      context: .
+      dockerfile: Flane.Db.Mongo\Dockerfile 
+    ports:
+      - "8093"
+
+  Flane.Db.Sql:
+    image: flane.db.sql:v1
+
+  Flane.Db.Redis:
+    image: flane.db.redis:v1
+    build:      
+      context: .
+      dockerfile: Flane.Db.Redis\Dockerfile
+    ports:
+      - "8095"
+
+  Flane.Db.Elasticsearch:
+    image: flane.db.elasticsearch:v1
+    build:
+      context: .
+      dockerfile: Flane.Db.Elasticsearch\Dockerfile
+    ports:
+      - "8096"
+
+  Flane.Queue.Nats:
+    image: flane.queue.nats:v1
+    build:
+      context: .
+      dockerfile: Flane.Queue.Nats\Dockerfile    
+    ports:
+      - "8097"
+
+  Flane.Handlers.Sales:
+    image: flane.handlers.sales:v1
+    build:
+      context: .
+      dockerfile: Flane.Handlers.Sales\Dockerfile      
+    ports:
+      - "8098"
+
+  Flane.Handles.Product:
+    image: flane.handles.product:v1
+    build:
+      context: .
+      dockerfile: Flane.Handles.Product\Dockerfile    
+    ports:
+      - "8099"
+
+  Flane.Mon.Kinaba:
+    image: flane.mon.kinaba:v1
+    build:
+      context: .
+      dockerfile: Flane.Mon.Kinaba\Dockerfile    
+    ports:
+      - "8101"
+
+  Flane.Mon.Prometheus:
+    image: flane.mon.prometheus:v1
+    build:
+      context: .
+      dockerfile: Flane.Mon.Prometheus\Dockerfile 
+    ports:
+      - "8102"
+
+  Flane.Comm.MailServer:
+    image: flane.comm.mailserver:v1
+    build:
+      context: .
+      dockerfile: Flane.Comm.MailServer\Dockerfile
+    ports:
+      - "8103"
+
+
+
+networks:
+  default:
+    external:
+      name: nat

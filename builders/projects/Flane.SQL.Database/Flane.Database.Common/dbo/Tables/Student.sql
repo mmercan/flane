@@ -1,0 +1,7 @@
+﻿CREATE TABLE [dbo].[Student] (
+    [ContactID]         UNIQUEIDENTIFIER NOT NULL,
+    [SalesOrderID]      UNIQUEIDENTIFIER NOT NULL,
+    [ServiceActivityID] UNIQUEIDENTIFIER NOT NULL,
+    CONSTRAINT [PK_Student] PRIMARY KEY CLUSTERED ([ContactID] ASC)
+);
+

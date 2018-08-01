@@ -18,7 +18,6 @@ function Unzip($zipfile, $outdir) {
 }
 
 
-<<<<<<< HEAD
 # function Add-Folder {
 #     param($folder)
 #     $global:folder = $folder
@@ -30,34 +29,6 @@ function Unzip($zipfile, $outdir) {
 #     # $appFolder
 
 # }
-
-=======
-function Add-Folder {
-    param($folder)
-
-    # $folder = "AWWeb.Web.Sts"
-
-    $scriptpath = $MyInvocation.ScriptName # $MyInvocation.MyCommand.Path 
-    $dir = Split-Path $scriptpath
-
-    $appFolder = Join-Path -Path $dir -ChildPath ..\..\..\prototypes\identity\$folder
-    $appRootFolder = Join-Path -Path $dir -ChildPath ..\..\..\prototypes\identity
-    $appFolder
-
-}
-
-#$folder = "AWWeb.Web.Sts"
-#$scriptpath = $MyInvocation.MyCommand.Path 
-#$dir = Split-Path $scriptpath
-
-#$appFolder = Join-Path -Path $dir -ChildPath ..\..\prototypes\identity\$folder
-#$appRootFolder = Join-Path -Path $dir -ChildPath ..\..\prototypes\identity
-#$appFolder
-
-function new-dotnet-Individual {
-    dotnet new mvc --auth  Individual --output $folder
-    Set-Location -Path $appFolder
->>>>>>> a18b4cc... builder module created
 
 #$folder = "AWWeb.Web.Sts"
 #$scriptpath = $MyInvocation.MyCommand.Path 
@@ -74,41 +45,39 @@ function new-dotnet-Individual {
     $launchSettings = Get-Content $fileName  -raw
     $launchSettings = $launchSettings.replace('"applicationUrl": "https://localhost:5001;http://localhost:5000"', '"applicationUrl": "http://localhost:5000"')
     $launchSettings | set-content  $fileName
-<<<<<<< HEAD
 
-    
 
     dotnet add package "WebPush-netcore"
     dotnet add package "Microsoft.AspNetCore.Identity" -v 2.1.0
     dotnet add package "Microsoft.AspNetCore.Identity.UI" -v 2.1.0
     dotnet add package "Microsoft.AspNetCore.Identity.EntityFrameworkCore" -v 2.1.0
     dotnet add package "Swashbuckle.AspNetCore"
+    dotnet add package "Microsoft.AspNetCore.Mvc.Versioning"
+    dotnet add package "Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer"
 }
 
 
-function new-dotnet {
+function new-dotnet ([string]$port = 5000) {
     dotnet new mvc # --output $folder
-    
+    $loc = '"applicationUrl": "http://localhost:' + $port + '"'
+
+
     $fileName = "./Properties/launchSettings.json"
     $launchSettings = Get-Content $fileName  -raw
-    $launchSettings = $launchSettings.replace('"applicationUrl": "https://localhost:5001;http://localhost:5000"', '"applicationUrl": "http://localhost:5000"')
+    $launchSettings = $launchSettings.replace('"applicationUrl": "https://localhost:5001;http://localhost:5000"', $loc)
     $launchSettings | set-content  $fileName
-
-    
 
     dotnet add package "WebPush-netcore"
     dotnet add package "Microsoft.AspNetCore.Identity" -v 2.1.0
     dotnet add package "Microsoft.AspNetCore.Identity.UI" -v 2.1.0
     dotnet add package "Microsoft.AspNetCore.Identity.EntityFrameworkCore" -v 2.1.0
     dotnet add package "Swashbuckle.AspNetCore"
+    dotnet add package "Microsoft.AspNetCore.Mvc.Versioning"
+    dotnet add package "Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer"
 }
 
-=======
-}
-
->>>>>>> a18b4cc... builder module created
 function Add-PushNotificationController {
-    $PushNotificationController = @' 
+    $PushNotificationController = @'
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -144,7 +113,6 @@ namespace __projectname__.Controllers
             //TODO: Implement Realistic Implementation
             // return Content("Blahhh");
             // return Ok("Blah");
-            
             return Content("Blah");
         }
 
@@ -703,8 +671,6 @@ namespace __projectname__.Repositories
 
 function Add-Sts-startupcs {
 
-    
-
     $fileName = "$appFolder\Startup.cs"
     $startupobj = (Get-Content $fileName) |
         Foreach-Object {
@@ -713,6 +679,7 @@ function Add-Sts-startupcs {
             'using Microsoft.IdentityModel.Tokens;'
             'using System.Security.Claims;'
             'using Microsoft.AspNetCore.Authentication.JwtBearer;'
+            'using Microsoft.AspNetCore.Authorization;'
             'using __projectname__.Models;'
             'using __projectname__.DbContexts;'
             'using __projectname__.Repositories;'
@@ -755,7 +722,10 @@ function Add-Sts-startupcs {
             '           });'
             ''
             '           //use both jwt schemas interchangeably  https://stackoverflow.com/questions/49694383/use-multiple-jwt-bearer-authentication'
-            '           // services.AddAuthorization(options =>{options.DefaultPolicy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().AddAuthenticationSchemes("azure", "Custom").Build();});'
+            '           services.AddAuthorization(options =>'
+            '           {'
+            '               options.DefaultPolicy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().AddAuthenticationSchemes("azure", "sts").Build();'
+            '           });'
             ''
         }
         # if ($_ -match "UseStaticFiles") {
@@ -776,6 +746,161 @@ function Add-Sts-startupcs {
     $startupobj | set-content  $fileName
 }
 
+function Add-Api-ConfigureJwtAuthService-startupcs {
+
+    $fileName = "$appFolder\Startup.cs"
+    $startupobj = (Get-Content $fileName) |
+        Foreach-Object {
+        $_ # send the current line to output
+        if ($_ -match "using System;") {
+            'using Microsoft.IdentityModel.Tokens;'
+            'using System.Security.Claims;'
+            'using Microsoft.AspNetCore.Authentication.JwtBearer;'
+            'using System.Text;'
+            'using Microsoft.AspNetCore.Authorization;'
+            '// using __projectname__.Models;'
+            '// using __projectname__.DbContexts;'
+            '// using __projectname__.Repositories;'
+        }
+        if ($_ -match "public IConfiguration Configuration") {
+            ''
+            '        public void ConfigureJwtAuthService(IServiceCollection services)'
+            '        {'
+            '             var audienceConfig = Configuration.GetSection("Tokens");'
+            '             var symmetricKeyAsBase64 = audienceConfig["Secret"];'
+            '             var keyByteArray = Encoding.ASCII.GetBytes(symmetricKeyAsBase64);'
+            '             var signingKey = new SymmetricSecurityKey(keyByteArray);'
+            ''
+            '            var tokenValidationParameters = new TokenValidationParameters'
+            '            {'
+            '                // The signing key must match!'
+            '                ValidateIssuerSigningKey = true,'
+            '                IssuerSigningKey = signingKey,'
+            ''
+            '                // Validate the JWT Issuer (iss) claim'
+            '                ValidateIssuer = true,'
+            '                ValidIssuer = audienceConfig["Issuer"],'
+            ''
+            '                // Validate the JWT Audience (aud) claim'
+            '                ValidateAudience = true,'
+            '                ValidAudience = audienceConfig["Audience"],'
+            ''
+            '                // Validate the token expiry'
+            '                ValidateLifetime = true,'
+            ''
+            '                ClockSkew = TimeSpan.Zero'
+            '            };'
+            ''
+            '            services.AddAuthentication(options =>'
+            '            {'
+            '                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;'
+            '                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;'
+            '            })'
+            '          .AddJwtBearer("azure", cfg =>'
+            '          {'
+            '              cfg.RequireHttpsMetadata = false;'
+            '              cfg.SaveToken = true;'
+            '              cfg.Authority = Configuration["AzureAd:Instance"] + "/" + Configuration["AzureAD:TenantId"];'
+            '              cfg.Audience = Configuration["AzureAd:ClientId"];'
+            '          })'
+            '            .AddJwtBearer("sts",cfg =>'
+            '            {'
+            '                cfg.TokenValidationParameters = tokenValidationParameters;'
+            '            });'
+            '           //use both jwt schemas interchangeably  https://stackoverflow.com/questions/49694383/use-multiple-jwt-bearer-authentication'
+            '           services.AddAuthorization(options =>'
+            '           {'
+            '               options.DefaultPolicy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().AddAuthenticationSchemes("azure", "sts").Build();'
+            '           });'
+
+            '        }'
+        }
+        if ($_ -match "services.AddMvcCore()") {
+            '       services.AddAuthentication();'
+            '       // .AddAzureAD(options => Configuration.Bind("AzureAd", options));'
+            '       ConfigureJwtAuthService(services);'
+            ' '
+            '       services.AddMvc(options =>'
+            '       {'
+            '             // var policy = new AuthorizationPolicyBuilder()'
+            '             //     .RequireAuthenticatedUser()'
+            '             //     .Build();'
+            '             // options.Filters.Add(new AuthorizeFilter(policy));'
+            '       })'
+            '       .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);'
+        }
+        if ($_ -match "app.UseCookiePolicy()") {
+            ''
+            'app.UseAuthentication();'
+            ''
+
+        }
+        if ($_ -match ".AddEntityFrameworkStores<ApplicationDbContext>()") {
+            #Add Lines after the selected pattern
+            '           .AddDefaultTokenProviders();'
+            ''
+            '           services.Configure<TokenSettings>(Configuration.GetSection("Tokens"));'
+            '           services.AddScoped<ITokenRepository, TokenRepository>();'
+            '           services.AddAuthentication(sharedOptions =>'
+            '           {'
+            '               sharedOptions.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;'
+            '               sharedOptions.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;'
+            '           })'
+            '           .AddJwtBearer("azure", cfg =>'
+            '           {'
+            '               cfg.RequireHttpsMetadata = false;'
+            '               cfg.SaveToken = true;'
+            '               cfg.Authority = Configuration["AzureAd:Instance"] + "/" + Configuration["AzureAD:TenantId"];'
+            '               cfg.Audience = Configuration["AzureAd:ClientId"];'
+            '           })'
+            '           .AddJwtBearer("local", cfg =>'
+            '           {'
+            '               cfg.RequireHttpsMetadata = false;'
+            '               cfg.SaveToken = true;'
+            '               cfg.TokenValidationParameters = new TokenValidationParameters()'
+            '               {'
+            '                   ValidIssuer = Configuration["Tokens:Issuer"],'
+            '                   ValidAudience = Configuration["Tokens:Audience"],'
+            '                   IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(Configuration["Tokens:Secret"])),'
+            '                   RoleClaimType = ClaimTypes.Role'
+            '               };'
+            '           });'
+            ''
+            '           //use both jwt schemas interchangeably  https://stackoverflow.com/questions/49694383/use-multiple-jwt-bearer-authentication'
+            '            services.AddAuthorization(options =>{options.DefaultPolicy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().AddAuthenticationSchemes("azure", "Custom").Build();});'
+            ''
+        }
+    }
+
+    $startupobj = $startupobj.replace(" services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);", " ")
+    $startupobj = $startupobj.replace("__projectname__", $folder)
+    $startupobj | set-content  $fileName
+
+    $jobj = Get-Content '.\appsettings.json' -raw | ConvertFrom-Json
+    $tokens = @"
+    {
+        "Secret": "aHR0cDovL3d3dy5tbWVyY2FuLmNvbQ==",
+        "Issuer": "http://www.mmercan.com",
+        "Audience": "Matt Mercan",
+        "MultipleRefreshTokenEnabled": true
+    }
+"@
+    $AzureAd = @"
+{
+    "Instance": "https://login.microsoftonline.com/",
+    "Domain": "mrtmrcn.onmicrosoft.com",
+    "TenantId": "e1870496-eab8-42d0-8eb9-75fa94cfc3b8",
+    "ClientId": "67d009b1-97fe-4963-84ff-3590b06df0da",
+    "CallbackPath": "/signin-oidc"
+  }
+
+"@
+    $jobj| add-member -Name "Tokens" -value (Convertfrom-Json $tokens) -MemberType NoteProperty
+    $jobj| add-member -Name "AzureAd" -value (Convertfrom-Json $AzureAd) -MemberType NoteProperty
+    $json = $jobj| ConvertTo-Json -Depth 5
+    $json | set-content  '.\appsettings.json'
+
+}
 function Add-cors-swagger-startupcs {
 
     $fileName = "$appFolder\Startup.cs"
@@ -784,6 +909,9 @@ function Add-cors-swagger-startupcs {
         $_ # send the current line to output
         if ($_ -match "using System;") {
             'using Swashbuckle.AspNetCore.Swagger;'
+            'using Microsoft.AspNetCore.Mvc.ApiExplorer;'
+            'using Microsoft.Extensions.Logging;'
+            'using Microsoft.AspNetCore.Mvc.Versioning;'
         }
         if ($_ -match "services.AddMvc()") {
             '            services.AddCors(o => o.AddPolicy("MyPolicy", builder =>'
@@ -795,9 +923,26 @@ function Add-cors-swagger-startupcs {
             '                .AllowCredentials();'
             '            }));'
             ''
-            '            services.AddSwaggerGen(c =>'
+            '            services.AddApiVersioning(o =>'
             '            {'
-            '                c.SwaggerDoc("v1", new Info { Title = "My API", Version = "v1" });'
+            '                o.AssumeDefaultVersionWhenUnspecified = true;'
+            '                o.DefaultApiVersion = new ApiVersion(1, 0);'
+            '                o.ApiVersionReader = new HeaderApiVersionReader("api-version");'
+            '            });'
+            ''
+            '            services.AddSwaggerGen(options =>'
+            '            {'
+            '                var provider = services.BuildServiceProvider().GetRequiredService<IApiVersionDescriptionProvider>();'
+            '                foreach (var description in provider.ApiVersionDescriptions)'
+            '                {'
+            '                    options.SwaggerDoc('
+            '                    description.GroupName,'
+            '                    new Info()'
+            '                    {'
+            '                        Title = $"Sample API {description.ApiVersion}",'
+            '                        Version = description.ApiVersion.ToString()'
+            '                    });'
+            '                }'
             '            });'
         }
         if ($_ -match "UseStaticFiles") {
@@ -805,18 +950,23 @@ function Add-cors-swagger-startupcs {
             '            // app.UseFileServer();'
             '            app.UseDefaultFiles();'
             '            app.UseSwagger();'
-            '            app.UseSwaggerUI(c =>'
-            '            {'
-            '              c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");'
-            '            });'
+            '            app.UseSwaggerUI(options =>'
+            '                {'
+            '                    foreach (var description in provider.ApiVersionDescriptions)'
+            '                    {'
+            '                        options.SwaggerEndpoint('
+            '                            $"/swagger/{description.GroupName}/swagger.json",'
+            '                            description.GroupName.ToUpperInvariant());'
+            '                    }'
+            '                });'
             '             app.UseCors("MyPolicy");'
         }
 
     }
-
+    $startupobj = $startupobj.replace("services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);", "services.AddMvcCore().AddVersionedApiExplorer( o => o.GroupNameFormat = `"'v'VVV`" ); `n services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);")
+    $startupobj = $startupobj.replace("IApplicationBuilder app, IHostingEnvironment env", "IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory,IApiVersionDescriptionProvider provider")
     $startupobj | set-content  $fileName
 }
-
 function Add-SignalR {
     dotnet add package Microsoft.AspNetCore.SignalR -v 1.0.0
 
@@ -900,6 +1050,190 @@ function Add-SignalR {
     } | Set-Content $fileName
 }
 
+function Add-Logger {
+
+    new-item -type directory -path $appFolder\Middlewares -Force
+
+    dotnet add package "Serilog.AspNetCore"
+    dotnet add package "Serilog.Sinks.Console"
+    dotnet add package "Serilog.Sinks.File"
+  #  dotnet add package "Serilog.Sinks.LogstashHttp"
+    dotnet add package "Serilog.Settings.Configuration"
+    dotnet add package "Serilog.Sinks.Loggly"
+    dotnet add package "Serilog.Sinks.ElasticSearch"
+
+    $fileName = "$appFolder\Startup.cs"
+    (Get-Content $fileName) |
+        Foreach-Object {
+        $_ # send the current line to output
+        if ($_ -match "using System;") {
+            'using Serilog;'
+            'using Serilog.Events;'
+        }
+        if ($_ -match "UseStaticFiles") {
+            '            var logger = new LoggerConfiguration()'
+            '            .ReadFrom.Configuration(Configuration)'
+            '            .Enrich.FromLogContext()'
+            '            .Enrich.WithProperty("Enviroment", env.EnvironmentName)'
+            '            .Enrich.WithProperty("ApplicationName", "Api App")'
+            '            .MinimumLevel.Override("Microsoft", LogEventLevel.Information)'
+            '            .WriteTo.Console()'
+            '            .WriteTo.File("Logs/logs.txt");'
+            '            //.WriteTo.Elasticsearch()'
+            ''
+            '            logger.WriteTo.Console();'
+            '            loggerFactory.AddSerilog();'
+            '            Log.Logger = logger.CreateLogger();'
+            '            app.UseExceptionLogger();'
+        }
+    } | Set-Content $fileName
+
+    $jobj = Get-Content '.\appsettings.json' -raw | ConvertFrom-Json
+    $Serilog = @"
+    {
+        "Using": ["Serilog.Sinks.File"],
+        "MinimumLevel": "Information",
+        "WriteTo": [{
+            "Name": "File",
+            "Args": {
+                "path": "Logs\\logs.txt",
+                "rollingInterval": "Day",
+                "outputTemplate": "{Timestamp:dd-MMM-yyyy HH:mm:ss.fff zzz} [{Level:u3}] [{Enviroment}] {Message:lj}{NewLine}{Exception}{ActionName} {RequestPath}{NewLine}{Exception}{NewLine}"
+            }
+        }]
+    }
+"@
+
+        $jobj| add-member -Name "Serilog" -value (Convertfrom-Json $Serilog) -MemberType NoteProperty
+        $json = $jobj| ConvertTo-Json -Depth 5
+        $json | set-content  '.\appsettings.json'
+
+        $ExceptionLoggerMiddleware = @"
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+
+namespace __projectname__
+{
+    public class ExceptionLoggerMiddleware
+    {
+        private readonly RequestDelegate _next;
+        private readonly DeveloperExceptionPageOptions _options;
+        private readonly ILogger _logger;
+
+        public ExceptionLoggerMiddleware(
+            RequestDelegate next,
+            IOptions<ExceptionLoggerOptions> options,
+            ILoggerFactory loggerFactory
+            )
+        {
+
+            _logger = loggerFactory.CreateLogger<ExceptionLoggerMiddleware>();
+            _next = next;
+        }
+
+        public async Task Invoke(HttpContext httpContext)
+        {
+            try
+            {
+                await _next(httpContext);
+            }
+            catch (Exception ex)
+            {
+
+                var unhandledException = LoggerMessage.Define(LogLevel.Error, new EventId(1, "UnhandledException"), "An unhandled exception has occurred while executing the request.");
+                unhandledException(_logger, ex);
+
+
+                if (httpContext.Response.HasStarted)
+                {
+                }
+                throw;
+            }
+        }
+    }
+    public class ExceptionLoggerOptions
+    {
+        public string Name { get; set; }
+    }
+
+    // Extension method used to add the middleware to the HTTP request pipeline.
+    public static class ExceptionLoggerMiddlewareExtensions
+    {
+        public static IApplicationBuilder UseExceptionLogger(this IApplicationBuilder builder)
+        {
+            return builder.UseMiddleware<ExceptionLoggerMiddleware>();
+        }
+    }
+}
+
+"@
+            $ExceptionLoggerMiddleware = $ExceptionLoggerMiddleware.replace("__projectname__", $folder)
+            $ExceptionLoggerMiddleware | set-content  ".\Middlewares\ExceptionLoggerMiddleware.cs"
+
+}
+function Add-TestApis {
+    new-item -type directory -path $appFolder\Controllers\Apis -Force
+
+    $ProductV1 = @'
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Threading.Tasks;
+    using Microsoft.AspNetCore.Authorization;
+    using Microsoft.AspNetCore.Http;
+    using Microsoft.AspNetCore.Mvc;
+
+    namespace __projectname__.Controllers
+    {
+        [ApiVersion("1.0", Deprecated = true)]
+        [Route("api/Product")]
+        //[Route("api/v{version:apiVersion}/Product")]
+        [ApiController]
+        public class ProductV1Controller : ControllerBase
+        {
+            [HttpGet]
+            [Authorize]
+            public string Get() => "Hello world v1!";
+        }
+    }
+'@
+    $ProductV1 = $ProductV1.replace("__projectname__", $folder)
+    $ProductV1 | set-content  ".\Controllers\Apis\ProductV1.cs"
+
+
+    $ProductV2 = @'
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Threading.Tasks;
+    using Microsoft.AspNetCore.Authorization;
+    using Microsoft.AspNetCore.Http;
+    using Microsoft.AspNetCore.Mvc;
+
+    namespace __projectname__.Controllers
+    {
+        [ApiVersion("2.0")]
+        [Route("api/Product")]
+        //[Route("api/v{version:apiVersion}/Product")]
+        [ApiController]
+        public class ProductV2Controller : ControllerBase
+        {
+            [HttpGet]
+            public string Get() => "Hello world v2!";
+        }
+    }
+'@
+    $ProductV2 = $ProductV2.replace("__projectname__", $folder)
+    $ProductV2 | set-content  ".\Controllers\Apis\ProductV2.cs"
+}
+
+
 function Remove-project {
     Remove-Item -Path "$appFolder\*" -Recurse
     Set-Location -Path $dir
@@ -912,29 +1246,17 @@ function build-project {
 
 
 
-<<<<<<< HEAD
     # dotnet add package "WebPush-netcore"
     # dotnet add package "Microsoft.AspNetCore.Identity" -v 2.1.0
     # dotnet add package "Microsoft.AspNetCore.Identity.UI" -v 2.1.0
     # dotnet add package "Microsoft.AspNetCore.Identity.EntityFrameworkCore" -v 2.1.0
     # dotnet add package "Swashbuckle.AspNetCore"
-=======
-    dotnet add package "WebPush-netcore"
-    dotnet add package "Microsoft.AspNetCore.Identity" -v 2.1.0
-    dotnet add package "Microsoft.AspNetCore.Identity.UI" -v 2.1.0
-    dotnet add package "Microsoft.AspNetCore.Identity.EntityFrameworkCore" -v 2.1.0
-    dotnet add package "Swashbuckle.AspNetCore"
->>>>>>> a18b4cc... builder module created
     Add-PushNotificationController
     Add-TokenController
     Add-SignalR
     dotnet restore
     dotnet build
-<<<<<<< HEAD
     Add-cors-swagger-startupcs
-=======
-    Add-corsswagger-startupcs
->>>>>>> a18b4cc... builder module created
 
 }
 # dotnet add package IdentityServer4

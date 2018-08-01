@@ -14,6 +14,7 @@ Write-Host "appFolder: $appFolder"
 set-location -Path $appFolder
 new-dotnet-Individual
 Add-cors-swagger-startupcs
+Add-Logger
 Add-Sts-startupcs
 Add-TokenController
 

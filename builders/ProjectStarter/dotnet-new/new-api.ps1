@@ -1,6 +1,5 @@
 Import-Module .\new-dotnet.ps1 -Force
 
-<<<<<<< HEAD
 $folder = "Flane.Web.Api"
 Write-Host "--------------------------------"
 $scriptpath = $MyInvocation.MyCommand.Path 
@@ -13,21 +12,22 @@ new-item -type directory -path $appFolder -Force
 Write-Host "appFolder: $appFolder"
 
 set-location -Path $appFolder
-new-dotnet-Individual
+new-dotnet -port 5003
+Add-cors-swagger-startupcs
+Add-Logger
+Add-Api-ConfigureJwtAuthService-startupcs
 
-Add-PushNotificationController
-Add-TokenController
-Add-SignalR
+Add-TestApis
+
+#Add-PushNotificationController
+#Add-TokenController
+#Add-SignalR
 dotnet restore
 dotnet build
-Add-corsswagger-startupcs
 
-=======
-Add-Folder "AWWeb.Web.Sts"
-Write-Host
+$Env:ASPNETCORE_ENVIRONMENT = "Development"
+dotnet watch run
+#Set-Location $dir
 
-$appRootFolder
-set-location $appRootFolder
+#Add-corsswagger-startupcs
 
-#new-dotnet
->>>>>>> a18b4cc... builder module created

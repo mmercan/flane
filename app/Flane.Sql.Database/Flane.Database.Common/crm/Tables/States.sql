@@ -1,0 +1,8 @@
+﻿CREATE TABLE [crm].[States] (
+    [ID]        UNIQUEIDENTIFIER NOT NULL,
+    [CountryID] UNIQUEIDENTIFIER NULL,
+    [Name]      NVARCHAR (50)    NULL,
+    [Title]     NVARCHAR (250)   NULL,
+    CONSTRAINT [PK_States] PRIMARY KEY CLUSTERED ([ID] ASC)
+);
+

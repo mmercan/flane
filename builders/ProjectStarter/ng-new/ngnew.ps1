@@ -25,8 +25,8 @@ $dir = Split-Path $scriptpath
 
 #$angularFolder = $dir + "\" + $folder
 
-$angularFolder = Join-Path -Path $dir -ChildPath ..\..\prototypes\nguniversal\$folder
-$angularRootFolder = Join-Path -Path $dir -ChildPath ..\..\prototypes\nguniversal
+$angularFolder = Join-Path -Path $dir -ChildPath ..\..\..\prototypes\$folder
+$angularRootFolder = Join-Path -Path $dir -ChildPath ..\..\..\prototypes
 $angularFolder
 
 function new-ng {

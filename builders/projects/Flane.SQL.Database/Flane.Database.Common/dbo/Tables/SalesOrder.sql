@@ -1,0 +1,28 @@
+﻿CREATE TABLE [dbo].[SalesOrder] (
+    [SalesOrderID]        UNIQUEIDENTIFIER NOT NULL,
+    [ProductID]           UNIQUEIDENTIFIER NULL,
+    [PriceListID]         UNIQUEIDENTIFIER NULL,
+    [ProductPriceLevelID] UNIQUEIDENTIFIER NULL,
+    [ServiceActivityID]   UNIQUEIDENTIFIER NULL,
+    [SiteID]              UNIQUEIDENTIFIER NULL,
+    [ContactID]           UNIQUEIDENTIFIER NULL,
+    [Quantity]            INT              NULL,
+    [Amount]              MONEY            NULL,
+    [AmountBase]          MONEY            NULL,
+    [Total]               MONEY            NULL,
+    [TotalBase]           MONEY            NULL,
+    [CreatedOn]           DATETIME         NULL,
+    [ModifiedOn]          DATETIME         NULL,
+    [About]               NVARCHAR (100)   NULL,
+    [PON]                 NVARCHAR (50)    NULL,
+    [FLC]                 NVARCHAR (50)    NULL,
+    [CLC]                 NVARCHAR (50)    NULL,
+    [MSATV]               NVARCHAR (50)    NULL,
+    [NTU]                 NVARCHAR (50)    NULL,
+    [Payment]             NVARCHAR (100)   NULL,
+    [Comment]             NVARCHAR (500)   NULL,
+    [Subscribe]           BIT              NULL,
+    [IsEmailSend]         BIT              NULL,
+    CONSTRAINT [PK_SalesOrder] PRIMARY KEY CLUSTERED ([SalesOrderID] ASC)
+);
+
