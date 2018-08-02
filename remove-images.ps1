@@ -1,4 +1,4 @@
-$imagelist = 'microsoft/dotnet' , 'microsoft/mssql-server-windows-developer', 'docker4w/nsenter-dockerd'
+$imagelist = 'microsoft/dotnet' , 'microsoft/mssql-server-windows-developer', 'docker4w/nsenter-dockerd', 'netfx-4.5.2-ssdt'
 
 . ./ConvertFromDocker.ps1
 
