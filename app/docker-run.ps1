@@ -9,4 +9,4 @@
 #docker rm $(docker ps -a -q)
 
 #docker-compose -f docker-compose.yml -f docker-compose.develop.yml up --build Flane.Web.STS
-docker-compose -f docker-compose.yml -f docker-compose.develop.yml up --build Flane.Db.Sql
+docker-compose -f docker-compose.yml -f docker-compose.develop.yml up --build  Flane-Web-STS

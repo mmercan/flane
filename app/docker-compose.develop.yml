@@ -6,12 +6,14 @@ services:
 
   Flane-Web-STS:
     image: flane.web.sts:${FLANE_VERSION}-dev
+    build:
+      target: develop-linux
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - DOTNET_USE_POLLING_FILE_WATCHER=1
       - ${SQLCONNECTION}
     volumes:
-      - C:\Repositories\flane\app\Flane.Web.Arr:/src/
+      - C:\Repositories\flane\app:/src/
     entrypoint: dotnet watch run --verbose --no-launch-profile --configuration Debug
 
   Flane-Web-Comms:
