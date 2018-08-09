@@ -13,5 +13,6 @@ docker rm $(docker ps -a -q)
 
 # delete images
 Foreach ($i in $filteredContainers) {
-    docker rmi $i.ImageId
+    docker rmi $i.ImageId --force
 }
+docker image list --all

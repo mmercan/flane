@@ -10,10 +10,10 @@ services:
       - "8080"
 
   Flane-Web-STS:
-    image: flane.web.sts:${FLANE_VERSION}
+    image: flane-web-sts:${FLANE_VERSION}
     build:
       context: .
-      dockerfile: Flane.Web.STS\Dockerfile
+      dockerfile: flanewebsts\dockerfile
     ports:
       - "8081"
 

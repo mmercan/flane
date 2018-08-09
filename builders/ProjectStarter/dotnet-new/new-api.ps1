@@ -17,6 +17,9 @@ Add-cors-swagger-startupcs
 Add-Logger
 Add-Api-ConfigureJwtAuthService-startupcs
 
+Add-HeathCheckApi
+Add-watchrunlaunchSettings -port 5003
+
 Add-TestApis
 
 #Add-PushNotificationController

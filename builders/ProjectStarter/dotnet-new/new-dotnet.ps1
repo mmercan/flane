@@ -48,12 +48,14 @@ function new-dotnet-Individual {
 
 
     dotnet add package "WebPush-netcore"
-    dotnet add package "Microsoft.AspNetCore.Identity" -v 2.1.0
-    dotnet add package "Microsoft.AspNetCore.Identity.UI" -v 2.1.0
-    dotnet add package "Microsoft.AspNetCore.Identity.EntityFrameworkCore" -v 2.1.0
+
     dotnet add package "Swashbuckle.AspNetCore"
     dotnet add package "Microsoft.AspNetCore.Mvc.Versioning"
     dotnet add package "Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer"
+
+    dotnet add package "Microsoft.AspNetCore.Identity"  -v 2.1.2
+    dotnet add package "Microsoft.AspNetCore.Identity.UI"  -v 2.1.2
+    dotnet add package "Microsoft.AspNetCore.Identity.EntityFrameworkCore"  -v 2.1.2
 }
 
 
@@ -68,12 +70,14 @@ function new-dotnet ([string]$port = 5000) {
     $launchSettings | set-content  $fileName
 
     dotnet add package "WebPush-netcore"
-    dotnet add package "Microsoft.AspNetCore.Identity" -v 2.1.0
-    dotnet add package "Microsoft.AspNetCore.Identity.UI" -v 2.1.0
-    dotnet add package "Microsoft.AspNetCore.Identity.EntityFrameworkCore" -v 2.1.0
+
     dotnet add package "Swashbuckle.AspNetCore"
     dotnet add package "Microsoft.AspNetCore.Mvc.Versioning"
     dotnet add package "Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer"
+
+    dotnet add package "Microsoft.AspNetCore.Identity" -v 2.1.2
+    dotnet add package "Microsoft.AspNetCore.Identity.UI"  -v 2.1.2
+    dotnet add package "Microsoft.AspNetCore.Identity.EntityFrameworkCore"  -v 2.1.2
 }
 
 function Add-PushNotificationController {
@@ -192,7 +196,6 @@ namespace __projectname__.Controllers
     $PushNotificationModel = $PushNotificationModel.replace("__projectname__", $folder)
     $PushNotificationModel | set-content  ".\Models\PushNotificationModel.cs"
 }
-
 function Add-TokenController {
 
     new-item -type directory -path $appFolder\DbContexts -Force
@@ -668,7 +671,6 @@ namespace __projectname__.Repositories
     $json = $jobj| ConvertTo-Json -Depth 5
     $json | set-content  '.\appsettings.json'
 }
-
 function Add-Sts-startupcs {
 
     $fileName = "$appFolder\Startup.cs"
@@ -745,7 +747,6 @@ function Add-Sts-startupcs {
     $startupobj = $startupobj.replace("__projectname__", $folder)
     $startupobj | set-content  $fileName
 }
-
 function Add-Api-ConfigureJwtAuthService-startupcs {
 
     $fileName = "$appFolder\Startup.cs"
@@ -939,7 +940,7 @@ function Add-cors-swagger-startupcs {
             '                    description.GroupName,'
             '                    new Info()'
             '                    {'
-            '                        Title = $"Sample API {description.ApiVersion}",'
+            '                        Title = $"__projectname__ API {description.ApiVersion}",'
             '                        Version = description.ApiVersion.ToString()'
             '                    });'
             '                }'
@@ -963,6 +964,7 @@ function Add-cors-swagger-startupcs {
         }
 
     }
+    $startupobj = $startupobj.replace("__projectname__", $folder)
     $startupobj = $startupobj.replace("services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);", "services.AddMvcCore().AddVersionedApiExplorer( o => o.GroupNameFormat = `"'v'VVV`" ); `n services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);")
     $startupobj = $startupobj.replace("IApplicationBuilder app, IHostingEnvironment env", "IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory,IApiVersionDescriptionProvider provider")
     $startupobj | set-content  $fileName
@@ -1026,7 +1028,9 @@ function Add-SignalR {
     }
 '@
     $charcs = $charcs.replace("__projectname__", $folder)
-    md Hubs
+
+    # new-item -type directory -path $appFolder\Middlewares -Force
+    mkdir Hubs
     $charcs | set-content  ".\Hubs\ChatHub.cs"
     $fileName = "$appFolder\Startup.cs"
     (Get-Content $fileName) |
@@ -1049,7 +1053,6 @@ function Add-SignalR {
         }
     } | Set-Content $fileName
 }
-
 function Add-Logger {
 
     new-item -type directory -path $appFolder\Middlewares -Force
@@ -1177,6 +1180,108 @@ namespace __projectname__
             $ExceptionLoggerMiddleware | set-content  ".\Middlewares\ExceptionLoggerMiddleware.cs"
 
 }
+function Add-HeathCheckApi{
+
+    new-item -type directory -path $appFolder\Controllers\Apis -Force
+
+    $healthCheck = @'
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using Microsoft.AspNetCore.Mvc;
+    using Microsoft.Extensions.Logging;
+    using Microsoft.AspNetCore.Authorization;
+    using Microsoft.AspNetCore.Http;
+    
+    namespace __projectname__.Controllers
+    {
+        [ApiVersion("1.0", Deprecated = true)]
+        [ApiVersion("2.0")]
+        [Route("api/HealthCheck")]
+        public class HealthCheckController : Controller
+        {
+    
+            ILogger<HealthCheckController> _logger;
+    
+            public HealthCheckController(ILogger<HealthCheckController> logger)
+            {
+                _logger = logger;
+            }
+    
+            [HttpGet("isalive")]
+            [ProducesResponseType(200)]
+            [ProducesResponseType(typeof(IDictionary<string, string>), 400)]
+            [ApiExplorerSettings(GroupName = @"HealthCheck")]
+            public IActionResult GetIsAlive()
+            {
+                try
+                {
+                    return Ok();
+                }
+                catch (Exception)
+                {
+                    _logger.LogError("Failed to execute isalive");
+                    return BadRequest();
+                }
+            }
+    
+    
+            [HttpGet("isaliveandwell")]
+            [ProducesResponseType(200)]
+            [ProducesResponseType(typeof(IDictionary<string, string>), 400)]
+            [ApiExplorerSettings(GroupName = @"HealthCheck")]
+            public IActionResult GetIsAliveAndWell()
+            {
+                try
+                {
+                    return Ok();
+                }
+                catch (Exception)
+                {
+                    _logger.LogError("Failed to execute isaliveandwell");
+                    return BadRequest();
+                }
+            }
+    
+        }
+    }
+'@
+    $healthCheck = $healthCheck.replace("__projectname__", $folder)
+    $healthCheck | set-content  ".\Controllers\Apis\HealthCheckController.cs"
+
+
+}
+
+function Add-watchrunlaunchSettings([string]$port = 5000)
+{
+        $jobj = Get-Content '.\Properties\launchSettings.json' -raw | ConvertFrom-Json
+
+        $dotnetwatch = @"
+        {
+          "commandName": "Executable",
+          "executablePath": "C:\\Program Files\\dotnet\\dotnet.exe",
+          "commandLineArgs": "watch run",
+          "workingDirectory": "__projectlocation__",
+          "launchBrowser": true,
+          "launchUrl": "https://localhost:__port__/",
+          "environmentVariables": {
+            "ASPNETCORE_ENVIRONMENT": "Development"
+          }
+        }
+"@
+
+        $projectloc = get-item $appFolder
+        $projectlocation = $projectloc.FullName.Replace("\","\\")
+
+        $dotnetwatch = $dotnetwatch.replace("__port__", $port)
+        $dotnetwatch = $dotnetwatch.replace("__projectlocation__", $projectlocation)
+
+        $jobj.profiles | add-member -Name "Kestrel (dotnet watch run)" -value (Convertfrom-Json $dotnetwatch) -MemberType NoteProperty
+        $json = $jobj| ConvertTo-Json -Depth 5
+        $json | set-content  '.\Properties\launchSettings.json'
+
+}
+
 function Add-TestApis {
     new-item -type directory -path $appFolder\Controllers\Apis -Force
 
@@ -1232,32 +1337,25 @@ function Add-TestApis {
     $ProductV2 = $ProductV2.replace("__projectname__", $folder)
     $ProductV2 | set-content  ".\Controllers\Apis\ProductV2.cs"
 }
-
-
 function Remove-project {
     Remove-Item -Path "$appFolder\*" -Recurse
     Set-Location -Path $dir
 }
 
-function build-project {
-
-    Set-Location -Path $appRootFolder
-    new-dotnet
-
-
-
-    # dotnet add package "WebPush-netcore"
-    # dotnet add package "Microsoft.AspNetCore.Identity" -v 2.1.0
-    # dotnet add package "Microsoft.AspNetCore.Identity.UI" -v 2.1.0
-    # dotnet add package "Microsoft.AspNetCore.Identity.EntityFrameworkCore" -v 2.1.0
-    # dotnet add package "Swashbuckle.AspNetCore"
-    Add-PushNotificationController
-    Add-TokenController
-    Add-SignalR
-    dotnet restore
-    dotnet build
-    Add-cors-swagger-startupcs
-
-}
+# function build-project {
+#     Set-Location -Path $appRootFolder
+#     new-dotnet
+#     # dotnet add package "WebPush-netcore"
+#     # dotnet add package "Microsoft.AspNetCore.Identity" -v 2.1.0
+#     # dotnet add package "Microsoft.AspNetCore.Identity.UI" -v 2.1.0
+#     # dotnet add package "Microsoft.AspNetCore.Identity.EntityFrameworkCore" -v 2.1.0
+#     # dotnet add package "Swashbuckle.AspNetCore"
+#     Add-PushNotificationController
+#     Add-TokenController
+#     Add-SignalR
+#     dotnet restore
+#     dotnet build
+#     Add-cors-swagger-startupcs
+# }
 # dotnet add package IdentityServer4
 # dotnet add package IdentityModel

@@ -1,0 +1,26 @@
+FROM microsoft/dotnet:2.1-sdk-alpine AS base
+WORKDIR /app
+EXPOSE 80
+
+FROM microsoft/dotnet:2.1-sdk-alpine AS develop-linux
+ENV DOTNET_USE_POLLING_FILE_WATCHER=1
+ENV ASPNETCORE_ENVIRONMENT=Development
+WORKDIR /src/myapp
+EXPOSE 80
+
+FROM microsoft/dotnet:2.1-sdk-alpine AS build
+WORKDIR /src
+COPY myapp/dockapp.csproj myapp/
+RUN dotnet restore myapp/dockapp.csproj
+COPY . .
+WORKDIR /src/myapp
+RUN dotnet build dockapp.csproj -c Release -o /app
+
+#FROM build AS publish
+#RUN dotnet publish dockapp.csproj -c Release -o /app
+
+FROM build AS final
+ENV ASPNETCORE_URLS http://+:80
+WORKDIR /src/myapp
+COPY --from=build /app .
+ENTRYPOINT ["dotnet", "run", "--no-launch-profile"]
