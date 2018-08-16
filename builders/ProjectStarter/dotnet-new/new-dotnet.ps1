@@ -70,7 +70,7 @@ function new-dotnet ([string]$port = 5000) {
     $launchSettings | set-content  $fileName
 
     dotnet add package "WebPush-netcore"
-
+    dotnet add package "Polly"
     dotnet add package "Swashbuckle.AspNetCore"
     dotnet add package "Microsoft.AspNetCore.Mvc.Versioning"
     dotnet add package "Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer"
@@ -1249,6 +1249,69 @@ function Add-HeathCheckApi{
     $healthCheck = $healthCheck.replace("__projectname__", $folder)
     $healthCheck | set-content  ".\Controllers\Apis\HealthCheckController.cs"
 
+
+}
+
+function Add-Dockerfile {
+
+
+    $dockerlinux = @'
+FROM microsoft/dotnet:2.1-aspnetcore-runtime AS base
+WORKDIR /app
+EXPOSE 80
+
+FROM microsoft/dotnet:2.1-sdk AS develop
+# RUN apt-get update && apt-get install bash
+ENV DOTNET_USE_POLLING_FILE_WATCHER=1
+ENV ASPNETCORE_ENVIRONMENT=Development
+WORKDIR /src/__projectname__
+EXPOSE 80
+
+FROM develop AS build
+WORKDIR /src
+COPY __projectname__/__projectname__.csproj __projectname__/
+RUN dotnet restore __projectname__/__projectname__.csproj
+COPY . .
+WORKDIR /src/__projectname__
+RUN dotnet build __projectname__.csproj -c Release -o /app
+
+FROM build AS publish
+RUN dotnet publish __projectname__.csproj -c Release -o /app
+
+FROM base AS final
+WORKDIR /app
+COPY --from=publish /app .
+ENTRYPOINT ["dotnet", "__projectname__.dll"]
+'@
+    $dockerlinux = $dockerlinux.replace("__projectname__", $folder)
+    $dockerlinux | set-content  ".\dockerfile-linux"
+
+
+    $dockerlinux = @'
+'@
+$dockerlinux = $dockerlinux.replace("__projectname__", $folder)
+$dockerlinux | set-content  ".\dockerfile-windows"
+
+$directoryBuildprops = @'
+<Project>
+  <PropertyGroup>
+    <DefaultItemExcludes>$(DefaultItemExcludes);$(MSBuildProjectDirectory)/obj/**/*</DefaultItemExcludes>
+    <DefaultItemExcludes>$(DefaultItemExcludes);$(MSBuildProjectDirectory)/bin/**/*</DefaultItemExcludes>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(DOTNET_RUNNING_IN_CONTAINER)' == 'true'">
+    <BaseIntermediateOutputPath>$(MSBuildProjectDirectory)/obj/container/</BaseIntermediateOutputPath>
+    <BaseOutputPath>$(MSBuildProjectDirectory)/bin/container/</BaseOutputPath>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(DOTNET_RUNNING_IN_CONTAINER)' != 'true'">
+    <BaseIntermediateOutputPath>$(MSBuildProjectDirectory)/obj/local/</BaseIntermediateOutputPath>
+    <BaseOutputPath>$(MSBuildProjectDirectory)/bin/local/</BaseOutputPath>
+  </PropertyGroup>
+</Project>
+'@
+#$directoryBuildprops = $directoryBuildprops.replace("__projectname__", $folder)
+$directoryBuildprops | set-content  ".\Directory.Build.props"
 
 }
 

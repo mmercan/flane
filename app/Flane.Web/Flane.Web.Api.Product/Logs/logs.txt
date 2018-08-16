@@ -1,0 +1,16 @@
+2018-08-16 12:53:54.315 +00:00 [WRN] Failed to determine the https port for redirect.
+2018-08-16 12:53:54.664 +00:00 [INF] Executing ViewResult, running view Index.
+2018-08-16 12:53:54.867 +00:00 [INF] Executed ViewResult - view Index executed in 236.2382ms.
+2018-08-16 12:53:55.107 +00:00 [INF] Sending file. Request path: '/lib/bootstrap/dist/js/bootstrap.js'. Physical path: '/src/Flane.Web.Api.Product/wwwroot/lib/bootstrap/dist/js/bootstrap.js'
+2018-08-16 12:53:55.118 +00:00 [INF] Sending file. Request path: '/css/site.css'. Physical path: '/src/Flane.Web.Api.Product/wwwroot/css/site.css'
+2018-08-16 12:53:55.121 +00:00 [INF] Sending file. Request path: '/images/banner1.svg'. Physical path: '/src/Flane.Web.Api.Product/wwwroot/images/banner1.svg'
+2018-08-16 12:53:55.141 +00:00 [INF] Sending file. Request path: '/lib/bootstrap/dist/css/bootstrap.css'. Physical path: '/src/Flane.Web.Api.Product/wwwroot/lib/bootstrap/dist/css/bootstrap.css'
+2018-08-16 12:53:55.150 +00:00 [INF] Sending file. Request path: '/images/banner2.svg'. Physical path: '/src/Flane.Web.Api.Product/wwwroot/images/banner2.svg'
+2018-08-16 12:53:55.153 +00:00 [INF] Sending file. Request path: '/lib/jquery/dist/jquery.js'. Physical path: '/src/Flane.Web.Api.Product/wwwroot/lib/jquery/dist/jquery.js'
+2018-08-16 12:53:55.199 +00:00 [INF] Sending file. Request path: '/js/site.js'. Physical path: '/src/Flane.Web.Api.Product/wwwroot/js/site.js'
+2018-08-16 12:53:55.199 +00:00 [INF] Sending file. Request path: '/images/banner3.svg'. Physical path: '/src/Flane.Web.Api.Product/wwwroot/images/banner3.svg'
+2018-08-16 12:53:55.317 +00:00 [INF] Sending file. Request path: '/lib/bootstrap/dist/fonts/glyphicons-halflings-regular.woff2'. Physical path: '/src/Flane.Web.Api.Product/wwwroot/lib/bootstrap/dist/fonts/glyphicons-halflings-regular.woff2'
+2018-08-16 12:53:55.726 +00:00 [INF] Sending file. Request path: '/favicon.ico'. Physical path: '/src/Flane.Web.Api.Product/wwwroot/favicon.ico'
+2018-08-16 12:54:00.532 +00:00 [INF] Executing ViewResult, running view Index.
+2018-08-16 12:54:00.541 +00:00 [INF] Executed ViewResult - view Index executed in 10.0466ms.
+2018-08-16 12:54:00.821 +00:00 [INF] Sending file. Request path: '/favicon.ico'. Physical path: '/src/Flane.Web.Api.Product/wwwroot/favicon.ico'

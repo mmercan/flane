@@ -1,0 +1,35 @@
+version: '3.4'
+
+services:
+  flane-web-api-product:      
+    image: flane-web-api-product:01-dev-linux
+    build:
+      target: develop
+      context: .
+      dockerfile: Flane.Web.Api.Product/dockerfile-linux
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - DOTNET_USE_POLLING_FILE_WATCHER=1
+    # volumes:
+    #   - FlaneWeb:/src
+    volumes:
+      - C:\Repositories\flane\app\Flane.Web:/src
+    #stdin_open: true
+    #tty: true
+    entrypoint: dotnet watch run --verbose --no-launch-profile --configuration Debug
+    ports:
+      - "8000:80"
+
+
+# networks:
+#   default:
+#     external:
+#       name: nat
+
+# volumes:
+#   FlaneWeb:
+#     driver_opts:
+#       type: 'none'
+#       o: 'bind'
+#       #device: 'C:\Repositories\flane\app\Flane.Web'
+#       device: '/c/Repositories/flane/app/Flane.Web'

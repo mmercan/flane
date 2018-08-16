@@ -1,11 +1,11 @@
 Import-Module .\new-dotnet.ps1 -Force
 
-$folder = "Flane.Web.Api"
+$folder = "Flane.Web.Api.Product"
 Write-Host "--------------------------------"
 $scriptpath = $MyInvocation.MyCommand.Path 
 $dir = Split-Path $scriptpath
-$appRootFolder = Join-Path -Path $dir -ChildPath ..\..\..\prototypes\
-$appFolder = Join-Path -Path $dir -ChildPath ..\..\..\prototypes\$folder
+$appRootFolder = Join-Path -Path $dir -ChildPath ..\..\..\app\Flane.Web\
+$appFolder = Join-Path -Path $dir -ChildPath ..\..\..\app\Flane.Web\$folder
 
 
 new-item -type directory -path $appFolder -Force
@@ -18,6 +18,7 @@ Add-Logger
 Add-Api-ConfigureJwtAuthService-startupcs
 
 Add-HeathCheckApi
+Add-Dockerfile
 Add-watchrunlaunchSettings -port 5003
 
 Add-TestApis

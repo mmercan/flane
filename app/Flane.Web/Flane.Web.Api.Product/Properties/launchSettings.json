@@ -1,0 +1,38 @@
+{
+    "iisSettings":  {
+                        "windowsAuthentication":  false,
+                        "anonymousAuthentication":  true,
+                        "iisExpress":  {
+                                           "applicationUrl":  "http://localhost:45088",
+                                           "sslPort":  44374
+                                       }
+                    },
+    "profiles":  {
+                     "IIS Express":  {
+                                         "commandName":  "IISExpress",
+                                         "launchBrowser":  true,
+                                         "environmentVariables":  {
+                                                                      "ASPNETCORE_ENVIRONMENT":  "Development"
+                                                                  }
+                                     },
+                     "Flane.Web.Api.Product":  {
+                                                   "commandName":  "Project",
+                                                   "launchBrowser":  true,
+                                                   "applicationUrl":  "http://localhost:5003",
+                                                   "environmentVariables":  {
+                                                                                "ASPNETCORE_ENVIRONMENT":  "Development"
+                                                                            }
+                                               },
+                     "Kestrel (dotnet watch run)":  {
+                                                        "commandName":  "Executable",
+                                                        "executablePath":  "C:\\Program Files\\dotnet\\dotnet.exe",
+                                                        "commandLineArgs":  "watch run",
+                                                        "workingDirectory":  "C:\\Repositories\\flane\\app\\Flane.Web\\Flane.Web.Api.Product",
+                                                        "launchBrowser":  true,
+                                                        "launchUrl":  "https://localhost:5003/",
+                                                        "environmentVariables":  {
+                                                                                     "ASPNETCORE_ENVIRONMENT":  "Development"
+                                                                                 }
+                                                    }
+                 }
+}
