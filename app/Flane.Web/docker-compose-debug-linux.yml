@@ -20,8 +20,8 @@ services:
     ports:
       - "8000:80"
     depends_on:
-      - flane-sql-db   
-  flane-sql-db:
+      - sqldb   
+  sqldb:
     image: flane-sql-db:01-dev-linux
     build:
       context: ./Flane.Sql.Db/
