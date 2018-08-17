@@ -26,10 +26,10 @@ $apiFolder = Join-Path -Path $dir -ChildPath .\dockapp
 
 # docker-compose -f docker-compose.develop.yml up --build
 
-docker-compose -f docker-compose-debug-linux.yml up --build --force-recreate --renew-anon-volumes flane-web-api-product
-
-docker-compose -f docker-compose-debug-linux.yml up --build --force-recreate --renew-anon-volumes sqldb
-
 # docker exec -ti <container name> /bin/bash
 #docker exec -ti flaneweb_test3app-develop51_1  /bin/bash
 #3bbac63951b5
+
+
+docker-compose -f docker-compose-debug-linux.yml up --build --force-recreate --renew-anon-volumes flane-web-api-product
+#docker-compose -f docker-compose-debug-linux.yml up --build --force-recreate --renew-anon-volumes sqldb
