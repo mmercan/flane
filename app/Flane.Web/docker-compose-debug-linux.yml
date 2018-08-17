@@ -10,6 +10,7 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - DOTNET_USE_POLLING_FILE_WATCHER=1
+      - FlaneConnection=Server=sqldb;Database=flane;User Id=sa;Password=Flane2018;
     # volumes:
     #   - FlaneWeb:/src
     volumes:
@@ -29,10 +30,10 @@ services:
     ports:
       - "1433:1433"
     environment:
-      SA_PASSWORD: "flane2018"
+      SA_PASSWORD: "Flane2018"
       ACCEPT_EULA: "Y"
     healthcheck:
-      test: sqlcmd -S sqldb -U SA -P 'flane2018' -Q 'select 1'
+      test: sqlcmd -S sqldb -U SA -P 'Flane2018' -Q 'select 1'
     # networks:
     #   mynetwork:
     #     aliases:

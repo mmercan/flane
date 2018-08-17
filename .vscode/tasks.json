@@ -1,15 +1,13 @@
 {
     "version": "2.0.0",
-    "tasks": [
-        {
-            "label": "build",
-            "command": "dotnet",
-            "type": "process",
-            "args": [
-                "build",
-                "${workspaceFolder}/prototypes/identity/Flane.Web.Api/Flane.Web.Api.csproj"
-            ],
-            "problemMatcher": "$msCompile"
-        }
-    ]
+    "tasks": [{
+        "label": "Flane.Web.Api.Product",
+        "command": "dotnet",
+        "type": "process",
+        "args": [
+            "build",
+            "${workspaceFolder}/app/Flane.Web/Flane.Web.Api.Product/Flane.Web.Api.Product.csproj"
+        ],
+        "problemMatcher": "$msCompile"
+    }]
 }
