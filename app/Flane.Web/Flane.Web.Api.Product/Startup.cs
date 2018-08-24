@@ -23,6 +23,9 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Flane.Web.Repos.Sql;
+using Microsoft.EntityFrameworkCore;
+using Flane.Web.Repositories;
 
 namespace Flane.Web.Api.Product
 {
@@ -32,15 +35,15 @@ namespace Flane.Web.Api.Product
         {
             Configuration = configuration;
         }
-
+        private bool InDocker { get { return Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER") == "true"; } }
         public IConfiguration Configuration { get; }
 
         public void ConfigureJwtAuthService(IServiceCollection services)
         {
-             var audienceConfig = Configuration.GetSection("Tokens");
-             var symmetricKeyAsBase64 = audienceConfig["Secret"];
-             var keyByteArray = Encoding.ASCII.GetBytes(symmetricKeyAsBase64);
-             var signingKey = new SymmetricSecurityKey(keyByteArray);
+            var audienceConfig = Configuration.GetSection("Tokens");
+            var symmetricKeyAsBase64 = audienceConfig["Secret"];
+            var keyByteArray = Encoding.ASCII.GetBytes(symmetricKeyAsBase64);
+            var signingKey = new SymmetricSecurityKey(keyByteArray);
 
             var tokenValidationParameters = new TokenValidationParameters
             {
@@ -74,20 +77,37 @@ namespace Flane.Web.Api.Product
               cfg.Authority = Configuration["AzureAd:Instance"] + "/" + Configuration["AzureAD:TenantId"];
               cfg.Audience = Configuration["AzureAd:ClientId"];
           })
-            .AddJwtBearer("sts",cfg =>
+            .AddJwtBearer("sts", cfg =>
+             {
+                 cfg.TokenValidationParameters = tokenValidationParameters;
+             });
+            //use both jwt schemas interchangeably  https://stackoverflow.com/questions/49694383/use-multiple-jwt-bearer-authentication
+            services.AddAuthorization(options =>
             {
-                cfg.TokenValidationParameters = tokenValidationParameters;
+                options.DefaultPolicy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().AddAuthenticationSchemes("azure", "sts").Build();
             });
-           //use both jwt schemas interchangeably  https://stackoverflow.com/questions/49694383/use-multiple-jwt-bearer-authentication
-           services.AddAuthorization(options =>
-           {
-               options.DefaultPolicy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().AddAuthenticationSchemes("azure", "sts").Build();
-           });
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDbContext<FlaneDbContext>(o =>
+            {
+                if (InDocker)
+                {
+
+                }
+                else
+                {
+                    o.UseInMemoryDatabase(databaseName: "Add_writes_to_database");
+                }
+                // o.UseMemoryCache()
+
+            });
+
+            services.AddScoped<ProductRepo>();
+
+
             services.Configure<CookiePolicyOptions>(options =>
             {
                 // This lambda determines whether user consent for non-essential cookies is needed for a given request.
@@ -96,20 +116,20 @@ namespace Flane.Web.Api.Product
             });
 
 
-            services.AddMvcCore().AddVersionedApiExplorer( o => o.GroupNameFormat = "'v'VVV" ); 
-       services.AddAuthentication();
-       // .AddAzureAD(options => Configuration.Bind("AzureAd", options));
-       ConfigureJwtAuthService(services);
- 
-       services.AddMvc(options =>
-       {
-             // var policy = new AuthorizationPolicyBuilder()
-             //     .RequireAuthenticatedUser()
-             //     .Build();
-             // options.Filters.Add(new AuthorizeFilter(policy));
-       })
-       .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
- 
+            services.AddMvcCore().AddVersionedApiExplorer(o => o.GroupNameFormat = "'v'VVV");
+            services.AddAuthentication();
+            // .AddAzureAD(options => Configuration.Bind("AzureAd", options));
+            ConfigureJwtAuthService(services);
+
+            services.AddMvc(options =>
+            {
+                // var policy = new AuthorizationPolicyBuilder()
+                //     .RequireAuthenticatedUser()
+                //     .Build();
+                // options.Filters.Add(new AuthorizeFilter(policy));
+            })
+            .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+
             services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
             {
                 builder.AllowAnyOrigin()
@@ -143,7 +163,7 @@ namespace Flane.Web.Api.Product
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory,IApiVersionDescriptionProvider provider)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, IApiVersionDescriptionProvider provider)
         {
             if (env.IsDevelopment())
             {
@@ -173,6 +193,7 @@ namespace Flane.Web.Api.Product
             app.UseExceptionLogger();
             // move  UseDefaultFiles to first line
             // app.UseFileServer();
+            Log.Warning("InDocker :" + InDocker.ToString());
             app.UseDefaultFiles();
             app.UseSwagger();
             app.UseSwaggerUI(options =>
@@ -184,10 +205,10 @@ namespace Flane.Web.Api.Product
                             description.GroupName.ToUpperInvariant());
                     }
                 });
-             app.UseCors("MyPolicy");
+            app.UseCors("MyPolicy");
             app.UseCookiePolicy();
 
-app.UseAuthentication();
+            app.UseAuthentication();
 
 
             app.UseMvc(routes =>

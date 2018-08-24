@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Flane.Web.Model
+namespace Flane.Web.Common
 {
     public class Class1
     {

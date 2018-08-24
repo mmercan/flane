@@ -51,3 +51,87 @@
 2018-08-16 14:39:34.263 +00:00 [INF] Sending file. Request path: '/images/banner3.svg'. Physical path: '/src/Flane.Web.Api.Product/wwwroot/images/banner3.svg'
 2018-08-16 14:39:34.299 +00:00 [INF] Sending file. Request path: '/lib/bootstrap/dist/fonts/glyphicons-halflings-regular.woff2'. Physical path: '/src/Flane.Web.Api.Product/wwwroot/lib/bootstrap/dist/fonts/glyphicons-halflings-regular.woff2'
 2018-08-16 14:39:34.470 +00:00 [INF] Sending file. Request path: '/favicon.ico'. Physical path: '/src/Flane.Web.Api.Product/wwwroot/favicon.ico'
+2018-08-20 12:17:54.077 +10:00 [WRN] Failed to determine the https port for redirect.
+2018-08-20 12:17:54.802 +10:00 [INF] Executing ViewResult, running view Index.
+2018-08-20 12:17:55.027 +10:00 [INF] Executed ViewResult - view Index executed in 283.1222ms.
+2018-08-20 12:17:55.089 +10:00 [INF] Sending file. Request path: '/images/banner2.svg'. Physical path: 'C:\Repositories\flane\app\Flane.Web\Flane.Web.Api.Product\wwwroot\images\banner2.svg'
+2018-08-20 12:17:55.093 +10:00 [INF] Sending file. Request path: '/images/banner1.svg'. Physical path: 'C:\Repositories\flane\app\Flane.Web\Flane.Web.Api.Product\wwwroot\images\banner1.svg'
+2018-08-20 12:17:55.106 +10:00 [INF] Sending file. Request path: '/css/site.css'. Physical path: 'C:\Repositories\flane\app\Flane.Web\Flane.Web.Api.Product\wwwroot\css\site.css'
+2018-08-20 12:17:55.121 +10:00 [INF] Sending file. Request path: '/lib/bootstrap/dist/css/bootstrap.css'. Physical path: 'C:\Repositories\flane\app\Flane.Web\Flane.Web.Api.Product\wwwroot\lib\bootstrap\dist\css\bootstrap.css'
+2018-08-20 12:17:56.683 +10:00 [INF] Sending file. Request path: '/swagger-ui.css'. Physical path: 'N/A'
+2018-08-20 12:17:56.740 +10:00 [INF] Sending file. Request path: '/swagger-ui-standalone-preset.js'. Physical path: 'N/A'
+2018-08-20 12:17:56.790 +10:00 [INF] Sending file. Request path: '/swagger-ui-bundle.js'. Physical path: 'N/A'
+2018-08-20 12:17:59.670 +10:00 [INF] Sending file. Request path: '/favicon-32x32.png'. Physical path: 'N/A'
+2018-08-20 12:18:00.370 +10:00 [INF] Sending file. Request path: '/favicon-16x16.png'. Physical path: 'N/A'
+2018-08-20 12:18:16.996 +10:00 [INF] Authorization failed.
+2018-08-20 12:18:17.011 +10:00 [INF] Executing ChallengeResult with authentication schemes (["azure","sts"]).
+2018-08-20 12:18:17.039 +10:00 [INF] AuthenticationScheme: azure was challenged.
+2018-08-20 12:18:17.049 +10:00 [INF] AuthenticationScheme: sts was challenged.
+2018-08-20 13:36:49.672 +10:00 [WRN] False
+2018-08-20 13:37:27.329 +10:00 [WRN] InDocker :False
+2018-08-20 13:42:28.676 +10:00 [WRN] InDocker :False
+2018-08-20 13:44:34.758 +10:00 [WRN] InDocker :False
+2018-08-20 13:48:21.207 +10:00 [WRN] InDocker :False
+2018-08-20 13:49:51.256 +10:00 [WRN] InDocker :False
+2018-08-20 14:16:57.358 +10:00 [WRN] Failed to determine the https port for redirect.
+2018-08-20 14:16:57.803 +10:00 [INF] Executing ObjectResult, writing value of type 'System.String'.
+2018-08-20 14:17:07.110 +10:00 [ERR] Failed to execute GET
+2018-08-20 14:17:07.122 +10:00 [INF] Executing HttpStatusCodeResult, setting HTTP status code 400
+2018-08-20 14:18:40.738 +10:00 [WRN] InDocker :False
+2018-08-20 14:18:45.436 +10:00 [WRN] Failed to determine the https port for redirect.
+2018-08-20 14:18:46.063 +10:00 [ERR] Failed to execute GETNo database provider has been configured for this DbContext. A provider can be configured by overriding the DbContext.OnConfiguring method or by using AddDbContext on the application service provider. If AddDbContext is used, then also ensure that your DbContext type accepts a DbContextOptions<TContext> object in its constructor and passes it to the base constructor for DbContext.
+2018-08-20 14:18:46.133 +10:00 [INF] Executing HttpStatusCodeResult, setting HTTP status code 400
+2018-08-20 14:21:29.318 +10:00 [WRN] InDocker :False
+2018-08-20 14:23:25.687 +10:00 [WRN] InDocker :False
+2018-08-20 15:25:00.895 +10:00 [WRN] InDocker :False
+2018-08-20 15:31:39.075 +10:00 [WRN] Failed to determine the https port for redirect.
+2018-08-20 15:31:39.520 +10:00 [INF] Entity Framework Core 2.1.1-rtm-30846 initialized 'FlaneDbContext' using provider 'Microsoft.EntityFrameworkCore.InMemory' with options: StoreName=Add_writes_to_database 
+2018-08-20 15:31:39.657 +10:00 [INF] Executing ObjectResult, writing value of type 'System.Collections.Generic.List`1[[Flane.Web.Model.Product.ProductInfo, Flane.Web.Model, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2018-08-20 15:49:43.802 +10:00 [WRN] InDocker :False
+2018-08-20 15:49:46.077 +10:00 [WRN] Failed to determine the https port for redirect.
+2018-08-20 16:02:14.254 +10:00 [WRN] InDocker :False
+2018-08-20 16:05:01.194 +10:00 [WRN] InDocker :False
+2018-08-20 16:05:53.325 +10:00 [WRN] Failed to determine the https port for redirect.
+2018-08-20 16:05:53.396 +10:00 [INF] Policy execution successful.
+2018-08-20 16:05:53.728 +10:00 [INF] Executing ObjectResult, writing value of type 'null'.
+2018-08-20 16:07:13.402 +10:00 [WRN] InDocker :False
+2018-08-20 16:08:18.342 +10:00 [WRN] InDocker :False
+2018-08-20 16:09:23.143 +10:00 [WRN] InDocker :False
+2018-08-20 16:09:49.310 +10:00 [WRN] Failed to determine the https port for redirect.
+2018-08-20 16:09:49.355 +10:00 [INF] Policy execution successful.
+2018-08-20 16:09:49.889 +10:00 [INF] Entity Framework Core 2.1.1-rtm-30846 initialized 'FlaneDbContext' using provider 'Microsoft.EntityFrameworkCore.InMemory' with options: StoreName=Add_writes_to_database 
+2018-08-20 16:09:50.053 +10:00 [INF] Saved 2 entities to in-memory store.
+2018-08-20 16:09:50.077 +10:00 [INF] Executing ObjectResult, writing value of type 'null'.
+2018-08-20 16:10:01.616 +10:00 [INF] Entity Framework Core 2.1.1-rtm-30846 initialized 'FlaneDbContext' using provider 'Microsoft.EntityFrameworkCore.InMemory' with options: StoreName=Add_writes_to_database 
+2018-08-20 16:10:01.744 +10:00 [INF] Executing ObjectResult, writing value of type 'System.Collections.Generic.List`1[[Flane.Web.Model.Product.ProductInfo, Flane.Web.Model, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2018-08-20 16:10:11.439 +10:00 [INF] Policy execution successful.
+2018-08-20 16:10:11.450 +10:00 [INF] Entity Framework Core 2.1.1-rtm-30846 initialized 'FlaneDbContext' using provider 'Microsoft.EntityFrameworkCore.InMemory' with options: StoreName=Add_writes_to_database 
+2018-08-20 16:10:11.472 +10:00 [INF] Saved 2 entities to in-memory store.
+2018-08-20 16:10:11.481 +10:00 [INF] Executing ObjectResult, writing value of type 'null'.
+2018-08-20 16:10:19.423 +10:00 [INF] Entity Framework Core 2.1.1-rtm-30846 initialized 'FlaneDbContext' using provider 'Microsoft.EntityFrameworkCore.InMemory' with options: StoreName=Add_writes_to_database 
+2018-08-20 16:10:19.446 +10:00 [INF] Executing ObjectResult, writing value of type 'System.Collections.Generic.List`1[[Flane.Web.Model.Product.ProductInfo, Flane.Web.Model, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2018-08-20 16:40:08.987 +10:00 [WRN] InDocker :False
+2018-08-20 16:41:41.196 +10:00 [WRN] InDocker :False
+2018-08-20 16:44:25.436 +10:00 [WRN] InDocker :False
+2018-08-20 16:47:58.683 +10:00 [WRN] InDocker :False
+2018-08-20 16:49:34.598 +10:00 [WRN] InDocker :False
+2018-08-20 16:50:24.627 +10:00 [WRN] InDocker :False
+2018-08-20 16:51:01.232 +10:00 [WRN] InDocker :False
+2018-08-20 17:02:48.380 +10:00 [WRN] Failed to determine the https port for redirect.
+2018-08-20 17:02:48.975 +10:00 [INF] Executing ViewResult, running view Index.
+2018-08-20 17:02:49.479 +10:00 [INF] Executed ViewResult - view Index executed in 567.8345ms.
+2018-08-20 17:02:50.480 +10:00 [INF] Sending file. Request path: '/js/site.js'. Physical path: 'C:\Repositories\flane\app\Flane.Web\Flane.Web.Api.Product\wwwroot\js\site.js'
+2018-08-20 17:02:50.489 +10:00 [INF] Sending file. Request path: '/images/banner3.svg'. Physical path: 'C:\Repositories\flane\app\Flane.Web\Flane.Web.Api.Product\wwwroot\images\banner3.svg'
+2018-08-20 17:02:50.524 +10:00 [INF] Sending file. Request path: '/lib/bootstrap/dist/js/bootstrap.js'. Physical path: 'C:\Repositories\flane\app\Flane.Web\Flane.Web.Api.Product\wwwroot\lib\bootstrap\dist\js\bootstrap.js'
+2018-08-20 17:02:50.624 +10:00 [INF] Sending file. Request path: '/lib/jquery/dist/jquery.js'. Physical path: 'C:\Repositories\flane\app\Flane.Web\Flane.Web.Api.Product\wwwroot\lib\jquery\dist\jquery.js'
+2018-08-20 17:02:50.908 +10:00 [INF] Sending file. Request path: '/lib/bootstrap/dist/fonts/glyphicons-halflings-regular.woff2'. Physical path: 'C:\Repositories\flane\app\Flane.Web\Flane.Web.Api.Product\wwwroot\lib\bootstrap\dist\fonts\glyphicons-halflings-regular.woff2'
+2018-08-20 17:02:51.412 +10:00 [INF] Sending file. Request path: '/favicon.ico'. Physical path: 'C:\Repositories\flane\app\Flane.Web\Flane.Web.Api.Product\wwwroot\favicon.ico'
+2018-08-20 17:03:06.682 +10:00 [INF] Entity Framework Core 2.1.1-rtm-30846 initialized 'FlaneDbContext' using provider 'Microsoft.EntityFrameworkCore.InMemory' with options: StoreName=Add_writes_to_database 
+2018-08-20 17:03:06.715 +10:00 [INF] Executing ObjectResult, writing value of type 'Microsoft.EntityFrameworkCore.Internal.InternalDbSet`1[[Flane.Web.Model.Product.ProductInfo, Flane.Web.Model, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2018-08-20 17:03:20.519 +10:00 [INF] Policy execution successful.
+2018-08-20 17:03:20.553 +10:00 [INF] Entity Framework Core 2.1.1-rtm-30846 initialized 'FlaneDbContext' using provider 'Microsoft.EntityFrameworkCore.InMemory' with options: StoreName=Add_writes_to_database 
+2018-08-20 17:03:20.755 +10:00 [INF] Saved 2 entities to in-memory store.
+2018-08-20 17:03:20.763 +10:00 [INF] Executing ObjectResult, writing value of type 'null'.
+2018-08-20 17:03:28.464 +10:00 [INF] Entity Framework Core 2.1.1-rtm-30846 initialized 'FlaneDbContext' using provider 'Microsoft.EntityFrameworkCore.InMemory' with options: StoreName=Add_writes_to_database 
+2018-08-20 17:03:28.477 +10:00 [INF] Executing ObjectResult, writing value of type 'Microsoft.EntityFrameworkCore.Internal.InternalDbSet`1[[Flane.Web.Model.Product.ProductInfo, Flane.Web.Model, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2018-08-24 12:13:45.972 +10:00 [WRN] InDocker :False

@@ -1,9 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
-
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
   </PropertyGroup>
-
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.1.2" />
@@ -20,10 +18,10 @@
     <PackageReference Include="Serilog.Sinks.Loggly" Version="5.3.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="3.0.0" />
     <PackageReference Include="WebPush-netcore" Version="1.0.2" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="2.1.1" />
   </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\Flane.Web.Model\Flane.Web.Model.csproj" />
+    <ProjectReference Include="..\Flane.Web.Repos\Flane.Web.Repos.csproj" />
   </ItemGroup>
-
 </Project>
