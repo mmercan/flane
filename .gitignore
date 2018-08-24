@@ -9,3 +9,4 @@ app/Flane.Web/Flane.Web.Api.Product/Logs/
 **/obj/local/
 **/obj/Debug/
 **/obj/
+**/Logs/

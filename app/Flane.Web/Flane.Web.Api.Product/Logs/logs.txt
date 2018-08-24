@@ -158,3 +158,4 @@
 2018-08-24 14:13:22.886 +10:00 [INF] Entity Framework Core 2.1.1-rtm-30846 initialized 'FlaneDbContext' using provider 'Microsoft.EntityFrameworkCore.InMemory' with options: StoreName=Add_writes_to_database 
 2018-08-24 14:13:23.180 +10:00 [INF] Saved 2 entities to in-memory store.
 2018-08-24 14:13:23.209 +10:00 [INF] Executing ObjectResult, writing value of type 'null'.
+2018-08-24 14:17:43.548 +10:00 [WRN] InDocker :False
