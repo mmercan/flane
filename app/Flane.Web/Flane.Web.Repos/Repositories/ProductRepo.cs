@@ -1,5 +1,5 @@
 using System;
-using Flane.Web.Common.Repos;
+using Mercan.Common.Repos;
 using Flane.Web.Model.Product;
 using Flane.Web.Repos.Sql;
 using Microsoft.EntityFrameworkCore;

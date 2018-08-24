@@ -135,3 +135,21 @@
 2018-08-20 17:03:28.464 +10:00 [INF] Entity Framework Core 2.1.1-rtm-30846 initialized 'FlaneDbContext' using provider 'Microsoft.EntityFrameworkCore.InMemory' with options: StoreName=Add_writes_to_database 
 2018-08-20 17:03:28.477 +10:00 [INF] Executing ObjectResult, writing value of type 'Microsoft.EntityFrameworkCore.Internal.InternalDbSet`1[[Flane.Web.Model.Product.ProductInfo, Flane.Web.Model, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
 2018-08-24 12:13:45.972 +10:00 [WRN] InDocker :False
+2018-08-24 12:14:10.089 +10:00 [WRN] Failed to determine the https port for redirect.
+2018-08-24 12:14:10.573 +10:00 [INF] Executing ViewResult, running view Index.
+2018-08-24 12:14:11.138 +10:00 [INF] Executed ViewResult - view Index executed in 599.1715ms.
+2018-08-24 12:14:11.586 +10:00 [INF] The file /lib/bootstrap/dist/css/bootstrap.css was not modified
+2018-08-24 12:14:11.586 +10:00 [INF] The file /css/site.css was not modified
+2018-08-24 12:14:11.586 +10:00 [INF] The file /images/banner2.svg was not modified
+2018-08-24 12:14:11.587 +10:00 [INF] The file /lib/jquery/dist/jquery.js was not modified
+2018-08-24 12:14:11.587 +10:00 [INF] The file /lib/bootstrap/dist/js/bootstrap.js was not modified
+2018-08-24 12:14:11.637 +10:00 [INF] The file /images/banner1.svg was not modified
+2018-08-24 12:14:11.687 +10:00 [INF] The file /js/site.js was not modified
+2018-08-24 12:14:11.693 +10:00 [INF] The file /images/banner3.svg was not modified
+2018-08-24 12:14:12.275 +10:00 [INF] The file /lib/bootstrap/dist/fonts/glyphicons-halflings-regular.woff2 was not modified
+2018-08-24 12:24:21.063 +10:00 [WRN] InDocker :False
+2018-08-24 12:29:06.609 +10:00 [WRN] InDocker :False
+2018-08-24 12:31:28.558 +10:00 [WRN] InDocker :False
+2018-08-24 12:53:26.806 +10:00 [WRN] InDocker :False
+2018-08-24 12:53:59.019 +10:00 [WRN] InDocker :False
+2018-08-24 12:58:36.514 +10:00 [WRN] InDocker :False

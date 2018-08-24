@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Flane.Web.Common
+namespace Mercan.Common.Mongo
 {
     public class Class1
     {

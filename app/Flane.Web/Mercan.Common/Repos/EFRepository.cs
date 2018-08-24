@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.Extensions.Logging;
 // using MMercan.Common.Interfaces;
 
-namespace Flane.Web.Common.Repos
+namespace Mercan.Common.Repos
 {
     public class EFRepository<T> : IRepository<T>,IDisposable where T : class, new()
     {

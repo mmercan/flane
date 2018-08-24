@@ -9,7 +9,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Flane.Web.Model", "Flane.We
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Flane.Web.Repos", "Flane.Web.Repos\Flane.Web.Repos.csproj", "{4E0751D1-E468-49ED-B98A-AB8A475C7ADD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Flane.Web.Common", "Flane.Web.Common\Flane.Web.Common.csproj", "{0C755005-B7BC-434D-AC7D-58761088C5A4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mercan.Common", "Mercan.Common\Mercan.Common.csproj", "{0C755005-B7BC-434D-AC7D-58761088C5A4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mercan.Common.Mongo", "Mercan.Common.Mongo\Mercan.Common.Mongo.csproj", "{4BF9CE16-D6F7-4296-A8EE-95717FC7680D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -72,5 +74,17 @@ Global
 		{0C755005-B7BC-434D-AC7D-58761088C5A4}.Release|x64.Build.0 = Release|Any CPU
 		{0C755005-B7BC-434D-AC7D-58761088C5A4}.Release|x86.ActiveCfg = Release|Any CPU
 		{0C755005-B7BC-434D-AC7D-58761088C5A4}.Release|x86.Build.0 = Release|Any CPU
+		{4BF9CE16-D6F7-4296-A8EE-95717FC7680D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4BF9CE16-D6F7-4296-A8EE-95717FC7680D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4BF9CE16-D6F7-4296-A8EE-95717FC7680D}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{4BF9CE16-D6F7-4296-A8EE-95717FC7680D}.Debug|x64.Build.0 = Debug|Any CPU
+		{4BF9CE16-D6F7-4296-A8EE-95717FC7680D}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{4BF9CE16-D6F7-4296-A8EE-95717FC7680D}.Debug|x86.Build.0 = Debug|Any CPU
+		{4BF9CE16-D6F7-4296-A8EE-95717FC7680D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4BF9CE16-D6F7-4296-A8EE-95717FC7680D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4BF9CE16-D6F7-4296-A8EE-95717FC7680D}.Release|x64.ActiveCfg = Release|Any CPU
+		{4BF9CE16-D6F7-4296-A8EE-95717FC7680D}.Release|x64.Build.0 = Release|Any CPU
+		{4BF9CE16-D6F7-4296-A8EE-95717FC7680D}.Release|x86.ActiveCfg = Release|Any CPU
+		{4BF9CE16-D6F7-4296-A8EE-95717FC7680D}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
