@@ -95,7 +95,7 @@ namespace Flane.Web.Api.Product
             {
                 if (InDocker)
                 {
-
+                    o.UseInMemoryDatabase(databaseName: "Add_writes_to_database");
                 }
                 else
                 {

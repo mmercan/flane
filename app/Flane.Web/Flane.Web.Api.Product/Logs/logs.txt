@@ -153,3 +153,8 @@
 2018-08-24 12:53:26.806 +10:00 [WRN] InDocker :False
 2018-08-24 12:53:59.019 +10:00 [WRN] InDocker :False
 2018-08-24 12:58:36.514 +10:00 [WRN] InDocker :False
+2018-08-24 14:13:05.320 +10:00 [WRN] Failed to determine the https port for redirect.
+2018-08-24 14:13:22.417 +10:00 [INF] Policy execution successful.
+2018-08-24 14:13:22.886 +10:00 [INF] Entity Framework Core 2.1.1-rtm-30846 initialized 'FlaneDbContext' using provider 'Microsoft.EntityFrameworkCore.InMemory' with options: StoreName=Add_writes_to_database 
+2018-08-24 14:13:23.180 +10:00 [INF] Saved 2 entities to in-memory store.
+2018-08-24 14:13:23.209 +10:00 [INF] Executing ObjectResult, writing value of type 'null'.
