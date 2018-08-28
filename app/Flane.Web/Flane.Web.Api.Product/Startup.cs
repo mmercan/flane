@@ -26,6 +26,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Flane.Web.Repos.Sql;
 using Microsoft.EntityFrameworkCore;
 using Flane.Web.Repositories;
+using Mercan.Common.Certificate;
 
 namespace Flane.Web.Api.Product
 {
@@ -64,6 +65,7 @@ namespace Flane.Web.Api.Product
 
                 ClockSkew = TimeSpan.Zero
             };
+            services.Configure<ValidateCertificateSettings>(Configuration.GetSection("CertValidation"));
 
             services.AddAuthentication(options =>
             {
@@ -77,14 +79,14 @@ namespace Flane.Web.Api.Product
               cfg.Authority = Configuration["AzureAd:Instance"] + "/" + Configuration["AzureAD:TenantId"];
               cfg.Audience = Configuration["AzureAd:ClientId"];
           })
-            .AddJwtBearer("sts", cfg =>
+            .AddJwtBearer("b2c", cfg =>
              {
                  cfg.TokenValidationParameters = tokenValidationParameters;
              });
             //use both jwt schemas interchangeably  https://stackoverflow.com/questions/49694383/use-multiple-jwt-bearer-authentication
             services.AddAuthorization(options =>
             {
-                options.DefaultPolicy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().AddAuthenticationSchemes("azure", "sts").Build();
+                options.DefaultPolicy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().AddAuthenticationSchemes("azure", "b2c").Build();
             });
         }
 
@@ -174,6 +176,8 @@ namespace Flane.Web.Api.Product
                 app.UseExceptionHandler("/Home/Error");
                 app.UseHsts();
             }
+            
+            //app.UseClientCertificateValidationMiddleware();
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();

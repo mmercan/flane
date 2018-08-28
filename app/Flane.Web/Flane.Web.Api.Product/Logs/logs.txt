@@ -159,3 +159,44 @@
 2018-08-24 14:13:23.180 +10:00 [INF] Saved 2 entities to in-memory store.
 2018-08-24 14:13:23.209 +10:00 [INF] Executing ObjectResult, writing value of type 'null'.
 2018-08-24 14:17:43.548 +10:00 [WRN] InDocker :False
+2018-08-27 15:29:33.444 +10:00 [WRN] InDocker :False
+2018-08-27 15:59:33.805 +10:00 [WRN] InDocker :False
+2018-08-27 15:59:38.588 +10:00 [WRN] Failed to determine the https port for redirect.
+2018-08-27 15:59:38.895 +10:00 [INF] Executing ViewResult, running view Index.
+2018-08-27 15:59:39.102 +10:00 [INF] Executed ViewResult - view Index executed in 237.247ms.
+2018-08-27 15:59:39.179 +10:00 [INF] The file /css/site.css was not modified
+2018-08-27 15:59:39.179 +10:00 [INF] The file /lib/bootstrap/dist/js/bootstrap.js was not modified
+2018-08-27 15:59:39.179 +10:00 [INF] The file /lib/bootstrap/dist/css/bootstrap.css was not modified
+2018-08-27 15:59:39.179 +10:00 [INF] The file /lib/jquery/dist/jquery.js was not modified
+2018-08-27 15:59:39.218 +10:00 [INF] The file /images/banner1.svg was not modified
+2018-08-27 15:59:39.241 +10:00 [INF] The file /images/banner2.svg was not modified
+2018-08-27 15:59:39.255 +10:00 [INF] The file /js/site.js was not modified
+2018-08-27 15:59:39.291 +10:00 [INF] The file /images/banner3.svg was not modified
+2018-08-27 15:59:39.379 +10:00 [INF] The file /lib/bootstrap/dist/fonts/glyphicons-halflings-regular.woff2 was not modified
+2018-08-27 15:59:40.082 +10:00 [INF] Sending file. Request path: '/favicon.ico'. Physical path: 'C:\Repositories\flane\app\Flane.Web\Flane.Web.Api.Product\wwwroot\favicon.ico'
+2018-08-27 16:34:44.500 +10:00 [INF] Executing ViewResult, running view Index.
+2018-08-27 16:34:44.540 +10:00 [INF] Executed ViewResult - view Index executed in 60.9983ms.
+2018-08-27 16:34:44.988 +10:00 [INF] Sending file. Request path: '/favicon.ico'. Physical path: 'C:\Repositories\flane\app\Flane.Web\Flane.Web.Api.Product\wwwroot\favicon.ico'
+2018-08-27 16:35:53.852 +10:00 [WRN] InDocker :False
+2018-08-27 16:36:09.981 +10:00 [FTL] Option is null
+2018-08-27 16:36:10.175 +10:00 [WRN] Failed to determine the https port for redirect.
+2018-08-27 16:36:10.572 +10:00 [INF] Executing ViewResult, running view Index.
+2018-08-27 16:36:10.826 +10:00 [INF] Executed ViewResult - view Index executed in 284.7171ms.
+2018-08-27 16:36:11.295 +10:00 [FTL] Option is null
+2018-08-27 16:36:11.343 +10:00 [INF] Sending file. Request path: '/favicon.ico'. Physical path: 'C:\Repositories\flane\app\Flane.Web\Flane.Web.Api.Product\wwwroot\favicon.ico'
+2018-08-27 16:37:47.892 +10:00 [FTL] Option is null
+2018-08-27 16:37:47.909 +10:00 [INF] Executing ViewResult, running view Index.
+2018-08-27 16:37:47.983 +10:00 [INF] Executed ViewResult - view Index executed in 74.3357ms.
+2018-08-27 16:37:48.354 +10:00 [FTL] Option is null
+2018-08-27 16:37:48.368 +10:00 [INF] Sending file. Request path: '/favicon.ico'. Physical path: 'C:\Repositories\flane\app\Flane.Web\Flane.Web.Api.Product\wwwroot\favicon.ico'
+2018-08-27 16:38:45.610 +10:00 [WRN] InDocker :False
+2018-08-27 17:03:13.125 +10:00 [WRN] InDocker :False
+2018-08-28 10:57:15.032 +10:00 [WRN] InDocker :False
+2018-08-28 10:58:25.025 +10:00 [WRN] Failed to determine the https port for redirect.
+2018-08-28 10:58:25.450 +10:00 [INF] Executing ViewResult, running view Index.
+2018-08-28 10:58:25.644 +10:00 [INF] Executed ViewResult - view Index executed in 222.8862ms.
+2018-08-28 10:58:31.603 +10:00 [INF] The file /swagger-ui-bundle.js was not modified
+2018-08-28 10:58:31.603 +10:00 [INF] The file /swagger-ui-standalone-preset.js was not modified
+2018-08-28 10:58:31.603 +10:00 [INF] The file /swagger-ui.css was not modified
+2018-08-28 10:58:32.771 +10:00 [INF] Sending file. Request path: '/favicon-32x32.png'. Physical path: 'N/A'
+2018-08-28 10:58:32.893 +10:00 [INF] Sending file. Request path: '/favicon-16x16.png'. Physical path: 'N/A'
