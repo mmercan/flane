@@ -56,6 +56,8 @@ function new-dotnet-Individual {
     dotnet add package "Microsoft.AspNetCore.Identity"  -v 2.1.2
     dotnet add package "Microsoft.AspNetCore.Identity.UI"  -v 2.1.2
     dotnet add package "Microsoft.AspNetCore.Identity.EntityFrameworkCore"  -v 2.1.2
+
+    dotnet add package "AutoMapper.Extensions.Microsoft.DependencyInjection"
 }
 
 
@@ -759,6 +761,7 @@ function Add-Api-ConfigureJwtAuthService-startupcs {
             'using Microsoft.AspNetCore.Authentication.JwtBearer;'
             'using System.Text;'
             'using Microsoft.AspNetCore.Authorization;'
+            'using AutoMapper;'
             '// using __projectname__.Models;'
             '// using __projectname__.DbContexts;'
             '// using __projectname__.Repositories;'
@@ -820,6 +823,8 @@ function Add-Api-ConfigureJwtAuthService-startupcs {
             '       services.AddAuthentication();'
             '       // .AddAzureAD(options => Configuration.Bind("AzureAd", options));'
             '       ConfigureJwtAuthService(services);'
+            ' '
+            '       services.AddAutoMapper();'
             ' '
             '       services.AddMvc(options =>'
             '       {'

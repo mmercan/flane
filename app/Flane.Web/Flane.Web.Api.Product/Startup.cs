@@ -27,6 +27,7 @@ using Flane.Web.Repos.Sql;
 using Microsoft.EntityFrameworkCore;
 using Flane.Web.Repositories;
 using Mercan.Common.Certificate;
+using AutoMapper;
 
 namespace Flane.Web.Api.Product
 {
@@ -123,6 +124,8 @@ namespace Flane.Web.Api.Product
             // .AddAzureAD(options => Configuration.Bind("AzureAd", options));
             ConfigureJwtAuthService(services);
 
+            services.AddAutoMapper();
+
             services.AddMvc(options =>
             {
                 // var policy = new AuthorizationPolicyBuilder()
@@ -176,7 +179,7 @@ namespace Flane.Web.Api.Product
                 app.UseExceptionHandler("/Home/Error");
                 app.UseHsts();
             }
-            
+
             //app.UseClientCertificateValidationMiddleware();
 
             app.UseHttpsRedirection();
