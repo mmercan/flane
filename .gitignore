@@ -1,6 +1,5 @@
 prototypes
 resources
-app/Flane.Web/Flane.Web.Api.Product/Logs/
 **/bin/Debug/
 **/bin/Release/
 **/bin/container/
